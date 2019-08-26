@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>商户后台管理中心</title>
+        <include file="public@head"/>
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <style>
+        body{margin: 0;padding: 0;}
+        .d_form{width: 100%;min-height: 70px;background: #ffffff;padding: 5px 0 50px 0;}
+        .d_form label{width: 200px;text-align: right;display: inline-block;}
+        .d_in{height: 50px;line-height: 50px;}
+        select{width: 300px;height: 30px;border: solid 1px #9f9f9f;border-radius: 5px;}
+        input{width: 300px;height: 30px;border: solid 1px #9f9f9f;border-radius: 5px;padding-left: 10px;box-sizing: border-box;}
+        .input1{width: 15px;height: 15px;}
+
+        label{font-weight: normal;font-size: 18px;}
+        .daohang{width: 100%;height: 30px;line-height: 30px;padding-left: 15px;padding-top: 10px;font-size: 16px}
+
+    </style>
+</head>
+<body>
+<div class="d_form">
+    <div class="daohang"><span>店铺管理</span> > <span>店铺详情</span></div><br/>
+    <form enctype="multipart/form-data" method="post">
+        <input type="hidden" name="id" value="{$shop.id}">
+        <div class="d_in">
+            <label><span style="color: red">*</span>所属商户：</label>
+            <input type="text" id="input-sch_shopkeeper" placeholder="输入手机号码" value="{$shop.user_login}({$shop.shopkeeper_id})" readonly disabled> &nbsp;
+            <input type="hidden" id="shopkeeper_id" name="shopkeeper_id" value="{$shop.shopkeeper_id}">
+        </div>
+
+        <div class="d_in">
+            <label>店铺类型：</label>
+            <select id="input-type" name="type" readonly disabled>
+                <option value="shop_type_jd" <if condition="$shop.type == 'shop_type_jd'">selected</if>>京东</option>
+                <option value="shop_type_tb" <if condition="$shop.type == 'shop_type_tb'">selected</if>>淘宝</option>
+            </select>
+        </div>
+        <div class="d_in">
+            <label>店铺名：</label>
+            <input type="text" id="input-name" name="name" value="{$shop.name}" readonly disabled>
+        </div>
+        <div class="d_in">
+            <label>旺旺号：</label>
+            <input type="text" name="trademanager" value="{$shop.trademanager}" readonly disabled>
+        </div>
+        <div class="d_in">
+            <label>店铺链接：</label>
+            <input type="text" name="link" value="{$shop.link}" readonly disabled>
+        </div>
+    </form>
+</div>
+<script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+</body>
+<script>
+    var sch_shopkeeper_id = 0;
+    $(function(){
+        var insertOptions = function(data, id) {
+            var source = new Array();
+            $.each(data, function(i, item){
+                source.push({id:item.id,value:item.user_login + '('+(item.id)+')'});
+            });
+            $('#'+id).autocomplete({
+                source: source,
+                select: function( event, ui) {
+                    $('#shopkeeper_id').val(ui.item.id);
+                },
+                change:function( event, ui) {
+                    $('#shopkeeper_id').val(ui.item.id);
+                }
+            })
+        }
+
+        insertOptions({$lists}, "input-sch_shopkeeper");
+    });
+</script>
+</html>

@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link href="__TMPL__/public/assets/css/base.css" rel="stylesheet" type="text/css">
+    <link href="__TMPL__/public/assets/css/index.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="__TMPL__/public/assets/js/jquery-1.10.2.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="__TMPL__/public/assets/webuploader1/webuploader.css">
+    <script type="text/javascript" src="__TMPL__/public/assets/webuploader1/webuploader.js"></script>
+    <style>
+        .d_in{margin-bottom: 15px !important;}
+        .d_in label {display: inline-block;width: 100px;text-align: right;}
+        #keywordDv{display: inline-block;}
+        #keyword{display: inline-block;}
+        .line{width: 100%;height: 3px;background: url("__TMPL__/public/assets/home/images/line.png") no-repeat;background-size: 100% 100%;}
+        .save{width: 130px;height: 35px;line-height:35px;text-align: center;border: none; border-radius: 5px;background: #4a92ff;color: #ffffff;margin-left: 285px;font-size: 14px;}
+        .feeShopStepTb th {border:1px solid #666666; background-color: #dedede;padding: 3px 0;font-weight: bold;}
+        .feeShopStepTb td {padding-left:5px;border:1px solid #666666; background-color: #ffffff;padding: 5px 0;}
+    </style>
+</head>
+<body>
+<div class="d_tab mt10">
+    <div class="line"></div>
+    <div class="tab_btm p30">
+
+    <div class="d_title">
+        <img src="__TMPL__/public/assets/home/images/tb4.png">任务发布
+    </div><br/>
+    <form id="form" action="{:url('task/edit_first')}" enctype="multipart/form-data" method="post">
+        <div class="d_form f14">
+        <input type="hidden" id="task_no" name="task_no" value="{$task.task_no}">
+        <div class="d_child">
+            <label>店铺类型：</label>
+            <select id="input-type" name="platform_id" onchange="getTaskCf()">
+                <foreach name="platforms" item="vo">
+                    <option value="{$vo.id}" <if condition="$vo.id == $task.platform_id">selected</if>>{$vo.platform_name}</option>
+                </foreach>
+            </select>
+        </div>
+        <div class="d_child" id="shopDv">
+            <label>选择店铺：</label>
+            <select name="shop_id">
+                <option value="">全部</option>
+                <foreach name="shops" item="vo">
+                    <option value="{$vo.id}" <if condition="$task.shop_id == $vo.id">selected</if>>{$vo.name}</option>
+                </foreach>
+            </select>
+        </div>
+        <div class="d_in" id="typeDv">
+            <label>任务类型：</label>
+            <foreach name="processes" item="vo" >
+                <input value="{$vo.id}" type="radio" class="input1 lx" onclick="javascript:loadBaseStep($(this));calculate_commission();" name="process_id" <if condition="$task.process_id == $vo.id">checked</if>>{$vo.name}
+            </foreach>
+        </div>
+        <div class="" id="feeStepDv" style="margin-bottom: 15px;">
+            <label style="display: inline-block;float: left;width:100px;text-align:right;margin-bottom:15px;">收费操作：</label>
+            <table id="feeStepTb">
+
+            </table>
+        </div>
+            <div style="clear:both;"></div>
+
+        <div class="d_child">
+            <label>任务标题：</label>
+            <input type="text" name="task_name" value="{$task.task_name|default=''}">
+        </div>
+        <div class="d_child">
+            <label>关键字：</label>
+            <div id="keywordDv"></div>
+            <foreach name="task.keyword" item="vo">
+                <notempty name="vo">
+                    <span style="background-color: #57dfff;color: white;display: inline-block;margin-right: 10px;height: 27px;line-height: 27px;padding: 0 5px; border-radius: 5px;" onmouseover="showDelBtn($(this))" onmouseout="hideDelBtn($(this))">{$vo}
+                    <input type="hidden" name="keyword[]" value="{$vo}">
+                    <img onclick="$(this).parent().remove()" style="margin-bottom: -2px;display: none;width: 16px;height: 16px;" src="__TMPL__/public/assets/home/images/close.png">
+                </span>
+                </notempty>
+            </foreach>
+            <input type="text" id="keyword" placeholder="按回车Enter创建">
+            <p style="padding-left:110px;color: red">输入框中输入单个关键词后，请按回车添加关键字</p>
+        </div>
+        <div class="d_child">
+            <table>
+                <tr>
+                    <td style="width: 100px;text-align: right;font-size: 14px;">产品主图：</td>
+                    <td><div>
+                        <div id="fileList" class="uploader-list">
+                            <div id="file1" class="file-item thumbnail remove-this">
+                                <img src="{:cmf_get_image_preview_url($task.product_img)}" width="50">
+                                <input type="hidden" name="product_img" id="product_img" value="{$task.product_img}">
+                            </div>
+                        </div>
+                        <div id="filePicker">选择图片</div>
+                    </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="d_child">
+            <label>宝贝链接：</label>
+            <input type="text" name="product_link" value="{$task.product_link}">
+        </div>
+        <div class="d_child">
+            <label>交易价格：</label>
+            <input type="text" id="product_price" name="product_price" placeholder="请输入商品交易的价格" value="{$task.product_price}" onchange="javascript:calculate_commission();">
+        </div>
+        <div class="d_child">
+            <label>显示价格：</label>
+            <input type="text" id="show_price" name="show_price" placeholder="请输入商品显示的价格" value="{$task.show_price}">
+        </div>
+        <div class="d_child">
+            <label>要拍笔数：</label>
+            <input  id="deal_num" name="deal_num" type="text" value="{$task.deal_num}" >
+        </div>
+        <div class="d_child">
+            <label>任务数量：</label>
+            <input id="task_num" name="task_num" type="text" value="{$task.task_num|default=''}" onchange="javascript:calculate_commission();">
+        </div>
+        <div class="d_child">
+            <label>任务佣金：</label>
+            <input id="commission" name="commission" type="text" placeholder="单笔任务的佣金" value="{$task.commission}" readonly>
+        </div>
+        <div class="d_child">
+            <label>总金额：</label>
+            <input id="total_money" name="total_money" type="text" placeholder="任务总金额" value="{$task.total_money}" readonly>
+        </div>
+        <div class="d_child" style="min-height: 120px;">
+            <label>特殊说明：</label>
+            <textarea name="special_desc" rows="10"> {$task.special_desc}</textarea>
+        </div>
+
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="button" class="btn btn-primary save" onclick="submitForm()">下一页</button>
+            </div>
+        </div>
+        </div>
+    </form>
+
+    </div>
+</div>
+</body>
+<script>
+
+    var list = $('#fileList');
+
+    var params = '&multi=1&filetype=image&app=app';
+    var uploader = WebUploader.create({
+        // 选完文件后，是否自动上传。
+        auto: true,
+        duplicate: true,
+        // swf文件路径
+        swf: '__TMPL__/public/assets/webuploader1/Uploader.swf',
+        // 文件接收服务端。
+        server: '{:url("user/Asset/webuploader")}?_ajax=1'+params,
+        // 选择文件的按钮。可选。
+        // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+        pick: '#filePicker',
+        multiple:false,
+        fileNumLimit:1,
+        // 只允许选择图片文件。
+        accept: {
+            title: 'Images',
+            extensions: 'gif,jpg,jpeg,bmp,png',
+            mimeTypes: 'image/*'
+        }
+    });
+
+    uploader.on( 'fileQueued', function( file ) {
+        var $li = $(
+            '<div id="' + file.id + '" class="file-item thumbnail remove-this">' +
+            '<img>' +
+            '<input type="hidden" name="product_img" id="product_img">' +
+            '<div class="info">' + file.name + '</div>' +
+            '</div>'
+            ),
+            $img = $li.find('img');
+
+        // $list为容器jQuery实例
+        list.html( $li );
+
+        $li.on('click', '.remove-this', function() {
+            uploader.removeFile( file, true);
+        })
+
+        // 创建缩略图
+        // 如果为非图片文件，可以不用调用此方法。
+        // thumbnailWidth x thumbnailHeight 为 100 x 100
+        uploader.makeThumb( file, function( error, src ) {
+            if ( error ) {
+                $img.replaceWith('<span>不能预览</span>');
+                return;
+            }
+
+            $img.attr( 'src', src );
+        }, 50, 50 );
+    });
+
+    uploader.on( 'uploadSuccess', function( file , response) {
+        $('#product_img').val(response.data['filepath']);
+        uploader.removeFile(file);
+        $( '#'+file.id ).find('p.state').text('已上传');
+    });
+
+    uploader.on( 'uploadError', function( file ) {
+        $( '#'+file.id ).find('p.state').text('上传出错');
+    });
+
+    uploader.on( 'uploadComplete', function( file) {
+        $( '#'+file.id ).find('.progress').fadeOut();
+    });
+
+    //var comment_fee = {$task.comment_fee};
+    var comment_fee = 0;
+    //回车事件绑定
+    $('#keyword').bind('keyup', function(event) {
+        if (event.keyCode == "13") {
+            if ($(this).val() == '') return;
+            var html = '<span style="background-color: #57dfff;color: white;display: inline-block;margin-right: 10px;height: 27px;line-height: 27px;padding: 0 5px; border-radius: 5px;" onmouseover="showDelBtn($(this))" onmouseout="hideDelBtn($(this))">'+$(this).val()+' <input type="hidden" name="keyword[]" value="'+$(this).val()+'"><img onclick="$(this).parent().remove()" style="margin-bottom: -2px;display: none;width: 16px;height: 16px;" src="__TMPL__/public/assets/home/images/close.png"></span>'
+            $('#keywordDv').append(html);
+            $(this).val('');
+
+        }
+    });
+
+    function showDelBtn(obj) {
+        obj.find('img:first').show();
+    }
+    function hideDelBtn(obj) {
+        obj.find('img:first').hide();
+    }
+    function getTaskCf() {
+        $.ajax({
+            url: "{:url('task/getTaskCf')}",
+            data: {id:$('#input-type').val(),task_no:$('#task_no').val()},
+            type: 'POST',
+            dateType: 'json',
+            success: function (data) {
+                if (data != null) {
+                    if (data.code == 1) {
+                        var types = data.data.types;
+                        var task = data.data.task;
+                        //console.log(task);
+                        var typehtml = '<label>任务类型：</label>';
+                        for (var i=0;i<types.length;i++) {
+                            if(types[i].id == task){
+                                typehtml += "<input value='"+types[i].id+"' type=\"radio\" class=\"input1\" name=\"process_id\" onclick=\"javascript:calculate_commission();loadStep($(this))\" checked>"+types[i].name
+                            }else{
+                                typehtml += "<input value='"+types[i].id+"' type=\"radio\" class=\"input1\" name=\"process_id\" onclick=\"javascript:calculate_commission();loadStep($(this))\" >"+types[i].name
+                            }
+                            //typehtml += "<input value='"+types[i].id+"' type=\"radio\" class=\"input1\" name=\"process_id\" onclick=\"javascript:calculate_commission();loadStep($(this))\" {if condition ="+types[i].id+"=="+task+"}checked{/if}>"+types[i].name
+                        }
+                        $('#typeDv').html(typehtml);
+
+                        var shops = data.data.shops;
+                        var shophtml = '<label>选择店铺：</label><select name="shop_id"><option value="">全部</option>';
+
+                        for (var i=0;i<shops.length;i++) {
+                            shophtml += "<option value='"+shops[i].id+"'>"+shops[i].name+"</option>";
+                        }
+                        shophtml += '</select>';
+                        $('#shopDv').html(shophtml);
+                    }
+                }
+            }
+        });
+    }
+
+    function calculate_commission() {
+        var price = $('#product_price').val();
+        //var deal_num = $('#deal_num').val();
+        var process_id = $('input[name="process_id"]:checked').val();
+        if (isNumber(price) && isNumber(process_id)) {
+            var step_ids = new Array();
+            $('input[name="step_id[]"]:checked').each(function () {
+                step_ids.push($(this).val());
+            });
+            console.log(JSON.stringify(step_ids))
+            $.ajax({
+                url: '{:url("task/calculate_commission")}',
+                data: {price:price, process_id:process_id, step_id:step_ids},
+                type: 'GET',
+                dateType: 'json',
+                success: function (data) {
+                    if (data != null) {
+                        $('#commission').val(data.data);
+                        $('#total_money').val((data.data+price*1)*$('#task_num').val()+comment_fee);
+                    }
+                }
+            });
+        }
+    }
+
+    function isNumber(inputData) {
+        if (parseFloat(inputData).toString() == "NaN") {
+            return false;
+        } else {
+            return true;
+        }
+    }
+    $(function () {
+
+        $(".lx ").each(function() {
+            var ckecked = $(this).is(':checked');
+            if (ckecked) {
+                loadBaseStep($(this));
+            }
+        });
+    })
+    function check(obj) {
+        $checked= obj.is(':checked');
+        if($checked){
+            $(obj).parent().parent().next('.ShopStepTb').show();
+        }else{
+            $(obj).parent().parent().next('.ShopStepTb').hide();
+        }
+    }
+
+    function loadStep(obj) {
+        $('#feeStepDv').show();
+        var process_id = obj.val();
+        var task_no = $('#task_no').val();
+        $.ajax({
+            url: "{:url('task/loadStep')}",
+            data: {'process_id':process_id,'task_no':task_no},
+            type: 'POST',
+            dateType: 'json',
+            success: function (data) {
+                if (data != null) {
+                    if (data.code == 0) {
+                        alert(data.msg);
+                    } else if (data.code == 1) {
+                        var list = data.data;
+
+                        var html = '';
+                        for (var i=0;i<list.length;i++) {
+                            if (i%5 == 0) ;
+                            if(list[i].shop_action_input && list[i].brush_action_input){
+                                html +='<tr><td><input value="'+list[i].id+'" type="checkbox" id="feeShopStepTb'+i+'" class="input1 xz" name="step_id[]" data-aid="'+list[i].step_type+'" checked onclick="javascript:calculate_commission();check($(this));">' + list[i].step_name+'('+list[i].expenses+'元)</td>';
+                            }else {
+                                html +='<tr><td><input value="'+list[i].id+'" type="checkbox" id="feeShopStepTb'+i+'" class="input1 xz" name="step_id[]" data-aid="'+list[i].step_type+'" onclick="javascript:calculate_commission();check($(this));">' + list[i].step_name+'('+list[i].expenses+'元)</td>';
+                            }
+
+                            //console.log(shopInput);
+                            if(list[i].shop_action_input && list[i].brush_action_input){
+                                var shopInput = list[i].shop_action_input;
+                                var brushInput = list[i].brush_action_input;
+                                html += '<tr style="display: block;" class="ShopStepTb"><td><table id="" class="feeShopStepTb"><thead><tr><th width="100px">名称</th><th>提示</th></tr></thead>';
+                                for (var j=0;j<shopInput.length;j++) {
+                                    html +='<tr>';
+                                    html +='<td>' +
+                                        //'<input name="brush_action_input['+list[i].step_type+']['+shopInput[j]['param_name']+']" value="'+shopInput[j]['input_type_name']+'">' +
+                                        shopInput[j].input_type_name+'</td>';
+                                    if(shopInput[j]['input_type'] == 'image'){
+                                        var $imgurl = brushInput[shopInput[j]['param_name']]['value'];
+                                        console.log($imgurl)
+                                        html += '<td>' +
+                                            '<div class="wu-example" style="position:relative;">'+
+                                            '<div id="fileList_f'+list[i].step_type+j+'" class="uploader-list"></div>'+
+                                            //'if condition="'+brushInput[shopInput[j].param_name][value] !== " "+'">'+
+                                            '<div class="imgUrl"><img src="../../upload/'+$imgurl +'" width="50">'+
+                                            //'/if>'+
+                                            //'<img src="{:cmf_get_image_preview_url('+brushInput[shopInput[j][param_name]][value]+')}" width="50">'+
+                                            '<input type="hidden" name="brush_action_input['+list[i].step_type+']['+shopInput[j]['param_name']+'][value]" value="'+brushInput[shopInput[j]['param_name']]['value']+'"></div>'+
+                                            '<div class="filePicker" id="f'+list[i].step_type+j+'" data-name="'+shopInput[j]['param_name']+'" onclick="addFile('+list[i].step_type+j+','+list[i].step_type+');">选择图片</div>'+
+                                            '</div>'+
+                                            '<input type="hidden" name="brush_action_input['+list[i].step_type+']['+shopInput[j]['param_name']+'][action]" value="'+shopInput[j]['input_effect_type']+'" /> '+
+                                            '<input type="hidden" name="brush_action_input['+list[i].step_type+']['+shopInput[j]['param_name']+'][input_type]" value="'+shopInput[j]['input_type']+'" />'+
+                                            '</td>';
+                                    }else {
+
+                                        html +='<td><input type="text" name="brush_action_input['+list[i].step_type+']['+shopInput[j]['param_name']+'][value]" value="'+brushInput[shopInput[j]['param_name']]['value']+'" style="border: 1px solid #ccc;width: 96%;height:16px;">' +
+                                            '<input type="hidden" name="brush_action_input['+list[i].step_type+']['+shopInput[j]['param_name']+'][action]" value="'+shopInput[j]['input_effect_type']+'" />'+
+                                            '<input type="hidden" name="brush_action_input['+list[i].step_type+']['+shopInput[j]['param_name']+'][input_type]" value="'+shopInput[j]['input_type']+'" />'+
+                                            '</td>';
+                                    }
+                                    html +='<td><input type="hidden" name="brush_action_input['+list[i].step_type+']['+shopInput[j]['param_name']+'][ziduan]" value="'+shopInput[j]['input_effect_info']+'" ></td>';
+                                    html +='</tr>';
+                                }
+                                html +='</table></td></tr>';
+                            }
+                            if ((i+1)%5 == 0) html += '</tr>';
+                        }
+                        if ((list.length-1)%5 > 0) {
+                            html += '<td colspan="' + (5-list.length%5)+ '"></td></tr>'
+                        }
+
+                        $('#feeStepTb').html(html);
+                        uploader.destroy();
+                        uploader = WebUploader.create(opts);
+                        init();
+                    }
+                }
+            }
+        });
+
+    }
+
+    function loadBaseStep(obj) {
+        $('#feeStepDv').show();
+        var process_id = obj.val();
+        var task_no = $('#task_no').val();
+        $.ajax({
+            url: "{:url('task/loadBaseStep')}",
+            data: {'process_id':process_id,'task_no':task_no},
+            type: 'POST',
+            dateType: 'json',
+            success: function (data) {
+                if (data != null) {
+                    if (data.code == 0) {
+                        alert(data.msg);
+                    } else if (data.code == 1) {
+                        var list = data.data;
+
+                        var html = '';
+                        for (var i=0;i<list.length;i++) {
+                            if (i%5 == 0) ;
+                            if(list[i].is_base == 0) {
+                                html += '<tr><td><input value="' + list[i].id + '" type="checkbox" id="feeShopStepTb' + i + '" class="input1 xz" name="step_id[]" data-aid="' + list[i].step_type + '" onclick="javascript:calculate_commission();check($(this));">' + list[i].step_name + '(' + list[i].expenses + '元)</td>';
+                                //console.log(shopInput);
+                                if (list[i].shop_action_input) {
+                                    var shopInput = list[i].shop_action_input;
+                                    html += '<tr style="display: none;" class="ShopStepTb"><td><table id="" class="feeShopStepTb"><thead><tr><th width="100px">名称</th><th>提示</th></tr></thead>';
+                                    for (var j = 0; j < shopInput.length; j++) {
+                                        html += '<tr>';
+                                        html += '<td>' +
+                                            //'<input name="brush_action_input['+list[i].step_type+']['+shopInput[j]['param_name']+']" value="'+shopInput[j]['input_type_name']+'">' +
+                                            shopInput[j].input_type_name + '</td>';
+                                        if (shopInput[j]['input_type'] == 'image') {
+                                            var $imgurl = '';
+                                            //console.log($imgurl)
+                                            html += '<td>' +
+                                                '<div class="wu-example" style="position:relative;">' +
+                                                '<div id="fileList_f' + list[i].step_type + j + '" class="uploader-list"></div>' +
+                                                '<div class="imgUrl"><img src="../../upload/' + $imgurl + '" width="50">' +
+                                                '<input type="hidden" name="brush_action_input[' + list[i].step_type + '][' + shopInput[j]['param_name'] + '][value]" value=""></div>' +
+                                                '<div class="filePicker" id="f' + list[i].step_type + j + '" data-name="' + shopInput[j]['param_name'] + '" onclick="addFile(' + list[i].step_type + j + ',' + list[i].step_type + ');">选择图片</div>' +
+                                                '</div>' +
+                                                '<input type="hidden" name="brush_action_input[' + list[i].step_type + '][' + shopInput[j]['param_name'] + '][action]" value="' + shopInput[j]['input_effect_type'] + '" /> ' +
+                                                '<input type="hidden" name="brush_action_input[' + list[i].step_type + '][' + shopInput[j]['param_name'] + '][input_type]" value="' + shopInput[j]['input_type'] + '" />' +
+                                                '</td>';
+                                        } else {
+
+                                            html += '<td><input type="text" name="brush_action_input[' + list[i].step_type + '][' + shopInput[j]['param_name'] + '][value]" value="" placeholder="' + shopInput[j]['input_type_info'] + '" style="border: 1px solid #ccc;width: 96%;height:16px;">' +
+                                                '<input type="hidden" name="brush_action_input[' + list[i].step_type + '][' + shopInput[j]['param_name'] + '][action]" value="' + shopInput[j]['input_effect_type'] + '" />' +
+                                                '<input type="hidden" name="brush_action_input[' + list[i].step_type + '][' + shopInput[j]['param_name'] + '][input_type]" value="' + shopInput[j]['input_type'] + '" />' +
+                                                '</td>';
+                                        }
+                                        html += '<td><input type="hidden" name="brush_action_input[' + list[i].step_type + '][' + shopInput[j]['param_name'] + '][ziduan]" value="' + shopInput[j]['input_effect_info'] + '" ></td>';
+                                        html += '</tr>';
+                                    }
+                                    html += '</table></td></tr>';
+                                }
+                            }else {
+                                if (list[i].shop_action_input) {
+                                    var shopInput = list[i].shop_action_input;
+                                    //var brushInput = list[i].brush_action_input;
+                                    html += '<tr><td><input value="' + list[i].id + '" disabled type="checkbox" id="feeShopStepTb' + i + '" class="input1 xz" name="step_id[]" data-aid="' + list[i].step_type + '" checked onclick="javascript:calculate_commission();check($(this));">' + list[i].step_name + '(' + list[i].expenses + '元)</td>';
+                                    html += '<tr style="display: block;" class="ShopStepTb"><td><table id="" class="feeShopStepTb"><thead><tr><th width="100px">名称</th><th>提示</th></tr></thead>';
+                                    for (var j = 0; j < shopInput.length; j++) {
+                                        html += '<tr>';
+                                        html += '<td>' +
+                                            //'<input name="brush_action_input['+list[i].step_type+']['+shopInput[j]['param_name']+']" value="'+shopInput[j]['input_type_name']+'">' +
+                                            shopInput[j].input_type_name + '</td>';
+                                        if (shopInput[j]['input_type'] == 'image') {
+                                            var $imgurl = '';
+                                            html += '<td>' +
+                                                '<div class="wu-example" style="position:relative;">' +
+                                                '<div id="fileList_f' + list[i].step_type + j + '" class="uploader-list"></div>' +
+                                                '<div class="imgUrl"><img src="../../upload/' + $imgurl + '" width="50">' +
+                                                '<input type="hidden" name="brush_action_input[' + list[i].step_type + '][' + shopInput[j]['param_name'] + '][value]" value=""></div>' +
+                                                '<div class="filePicker" id="f' + list[i].step_type + j + '" data-name="' + shopInput[j]['param_name'] + '" onclick="addFile(' + list[i].step_type + j + ',' + list[i].step_type + ');">选择图片</div>' +
+                                                '</div>' +
+                                                '<input type="hidden" name="brush_action_input[' + list[i].step_type + '][' + shopInput[j]['param_name'] + '][action]" value="' + shopInput[j]['input_effect_type'] + '" /> ' +
+                                                '<input type="hidden" name="brush_action_input[' + list[i].step_type + '][' + shopInput[j]['param_name'] + '][input_type]" value="' + shopInput[j]['input_type'] + '" />' +
+                                                '</td>';
+                                        } else {
+
+                                            html += '<td><input type="text" name="brush_action_input[' + list[i].step_type + '][' + shopInput[j]['param_name'] + '][value]" value="" placeholder="' + shopInput[j]['input_type_info'] + '" style="border: 1px solid #ccc;width: 96%;height:16px;">' +
+                                                '<input type="hidden" name="brush_action_input[' + list[i].step_type + '][' + shopInput[j]['param_name'] + '][action]" value="' + shopInput[j]['input_effect_type'] + '" />' +
+                                                '<input type="hidden" name="brush_action_input[' + list[i].step_type + '][' + shopInput[j]['param_name'] + '][input_type]" value="' + shopInput[j]['input_type'] + '" />' +
+                                                '</td>';
+                                        }
+                                        html += '<td><input type="hidden" name="brush_action_input[' + list[i].step_type + '][' + shopInput[j]['param_name'] + '][ziduan]" value="' + shopInput[j]['input_effect_info'] + '" ></td>';
+                                        html += '</tr>';
+                                    }
+                                    html += '</table></td></tr>';
+                                }
+                            }
+                            if ((i+1)%5 == 0) html += '</tr>';
+                        }
+                        if ((list.length-1)%5 > 0) {
+                            html += '<td colspan="' + (5-list.length%5)+ '"></td></tr>'
+                        }
+
+                        $('#feeStepTb').html(html);
+                        uploader.destroy();
+                        uploader = WebUploader.create(opts);
+                        init();
+                    }
+                }
+            }
+        });
+
+    }
+
+    function submitForm() {
+        $.ajax({
+            url: "{:url('task/vldTask')}",
+            data: $('#form').serialize(),
+            type: 'POST',
+            dateType: 'json',
+            success: function (data) {
+                if (data != null) {
+                    if (data.code == 0) {
+                        if (data.data == 2) {
+                            var r = confirm("余额不足,请充值！立即前往？")
+                            if (r == true) {
+                                //window.screen.height获得屏幕的高，window.screen.width获得屏幕的宽
+                                var iTop = (window.screen.height - 30 - 300) / 2;       //获得窗口的垂直位置;
+                                var iLeft = (window.screen.width - 10 - 600) / 2;        //获得窗口的水平位置;
+                                var strWindowFeatures = "width=600,height=300,toolbar=0,menubar=no,location=no,resizable=no,scrollbars=true,status=true,top=" + iTop + ",left=" + iLeft;
+                                window.open("{:url('shopkeeper/profile/qr_recharge')}", "B_page", strWindowFeatures);
+                            }
+                        } else {
+                            alert(data.msg);
+                        }
+                    } else if (data.code == 1) {
+                        $('#form').submit();
+                    }
+                }
+            }
+        });
+    }
+        /* 修改图片 */
+        var action_id = '';
+        var action_id2 = '';
+
+        function addFile(id, id2) {
+            action_id = id;
+            action_id2 = id2;
+        }
+
+        var params = '&multi=1&filetype=image&app=app';
+        var opts = {
+            // 选完文件后，是否自动上传。
+            auto: true,
+            duplicate: false,
+            // swf文件路径
+            swf: '__TMPL__/public/assets/webuploader1/Uploader.swf',
+            // 文件接收服务端。
+            server: '{:url("user/Asset/webuploader")}?_ajax=1' + params,
+            // 选择文件的按钮。可选。
+            // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+            pick: '.filePicker',
+            // 只允许选择图片文件。
+            accept: {
+                title: 'Images',
+                extensions: 'gif,jpg,jpeg,bmp,png',
+                mimeTypes: 'image/*'
+            }
+        };
+        // 初始化Web Uploader
+        var uploader = WebUploader.create(opts);
+        uploader.refresh();
+        init();
+
+        function init() {
+            // 当有文件添加进来的时候
+            uploader.on('fileQueued', function (file) {
+                var $name = $('#f' + action_id).data('name');
+                var $li = $(
+                    '<div id="' + file.id + '" class="file-item thumbnail">' + '<img class="gunabi" src="__TMPL__/public/assets/home/images/delete.jpg" style="width: 30px;position: absolute;right: 0px;">' +
+                    '<img>' +
+                    '<div class="info">' + file.name + '</div>' +
+                    '<input type="hidden" name="brush_action_input[' + action_id2 + '][' + $name + '][value]">' +
+                    '</div>'
+                    ),
+                    $img = $li.find('img[class != "gunabi"]');
+
+                // $list为容器jQuery实例
+                $('#fileList_f' + action_id).next('.imgUrl').remove();
+                $('#fileList_f' + action_id).append($li);
+
+                // 创建缩略图
+                // 如果为非图片文件，可以不用调用此方法。
+                // thumbnailWidth x thumbnailHeight 为 100 x 100
+                uploader.makeThumb(file, function (error, src) {
+                    if (error) {
+                        $img.replaceWith('<span>不能预览</span>');
+                        return;
+                    }
+
+                    $img.attr('src', src);
+                }, 100, 100);
+            });
+
+
+            // 文件上传过程中创建进度条实时显示。
+            uploader.on('uploadProgress', function (file, percentage) {
+                var $li = $('#' + file.id),
+                    $percent = $li.find('.progress span');
+
+                // 避免重复创建
+                if (!$percent.length) {
+                    $percent = $('<p class="progress"><span></span></p>')
+                        .appendTo($li)
+                        .find('span');
+                }
+
+                $percent.css('width', percentage * 100 + '%');
+            });
+
+            // 文件上传成功，给item添加成功class, 用样式标记上传成功。
+            uploader.on('uploadSuccess', function (file, response) {
+                var $name = $('#f' + action_id).data('name');
+                $('#' + file.id).addClass('upload-state-done');
+                $('#' + file.id).find('input[name="brush_action_input[' + action_id2 + '][' + $name + '][value]"]').val(response.data['filepath']);
+            });
+
+
+            // 完成上传完了，成功或者失败，先删除进度条。
+            uploader.on('uploadComplete', function (file) {
+                $('#' + file.id).find('.progress').remove();
+            });
+            $('.feeShopStepTb').on('click', '.gunabi', function () {
+                $(this).parent().remove();
+            });
+    }
+</script>
+</html>

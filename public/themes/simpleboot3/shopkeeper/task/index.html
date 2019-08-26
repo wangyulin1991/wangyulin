@@ -1,0 +1,85 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style>
+
+    body{padding: 0;margin: 0;}
+    .d_search{width: 100%;min-height: 70px;line-height: 70px; background: #ffffff;}
+
+    .list{margin-top: 20px; width: 100%;min-height:500px;background: #ffffff;padding: 20px 20px 40px 20px;box-sizing: border-box;position: relative;}
+    .p2{line-height: 40px;font-size: 20px;font-weight: bold;margin: 0;}
+    .t_first{width: 100%;text-align: center;border-collapse: collapse;border-collapse: collapse;
+        border-spacing: 0;}
+    .t_first tr{height: 40px;font-size: 12px;line-height: 40px;color: #a0a0a0;}
+    .t_first tr:nth-child(2n) {background: #f6f6f6;}
+    .t_first tr td{height: 40px; border-bottom: solid 1px #a0a0a0;}
+    .t_first tr td a{color: #0066ff;}
+    .t_first th{color: #6e6e6e;font-weight: normal;border-bottom: solid 1px #a0a0a0;line-height:40px;
+font-size: 13px;}
+    .td{color: red;}
+    select{width: 150px;height: 30px;border: solid 1px #9f9f9f;border-radius: 5px;}
+    input{width: 150px;height: 30px;border: solid 1px #9f9f9f;border-radius: 5px}
+
+    .btn_search{width: 70px;height: 30px;border: none; border-radius: 5px;background: #2b2de0;color: #ffffff;}
+    .btn_add{display: inline-block; width: 100px;height: 30px;line-height: 30px;text-align: center;text-decoration: none; border: none; border-radius: 5px;background: #fe0000;color: #ffffff;}
+
+    label{margin-left: 15px;color: #6e6e6e}.daohang{width: 100%;height: 30px;line-height: 30px;padding-left: 15px;padding-top: 10px;}
+    .daohang{width: 100%;height: 30px;line-height: 30px;padding-left: 15px;padding-top: 10px;}
+</style>
+<div class="d_search">
+    <div class="daohang"><span>任务管理</span> > <span>进行中的任务</span></div>
+    <form action="{:url('task/index')}" method="get">
+        <label>任务类型：</label>
+        <select name="process_id">
+            <option value="">全部</option>
+            <foreach name="$process" item="vo">
+                <option value='{$vo.id}' <if condition="$vo.id == $process_id">selected</if>>{$vo.name}</option>
+            </foreach>
+        </select>
+        <label>任务名称：</label>
+        <input type="text" name="task_name" value="{$task_name}">
+        <button type="submit" class="btn_search">搜索</button>
+        <button type="button" class="btn_search" style="background: red" onclick="window.location.href='{:url(\'task/index\')}'">清空</button>
+        <!--<a class="btn_add" href="{:url('task/add')}">发布任务</a>-->
+    </form>
+</div>
+<div class="list">
+    <table class="t_first">
+        <tr>
+            <th>任务编号</th>
+            <th>任务名称</th>
+            <th>关联店铺</th>
+            <th>任务类型</th>
+            <th>产品单价</th>
+            <th>发放数量</th>
+            <th>任务佣金</th>
+            <th>任务总佣金</th>
+            <th>已完成</th>
+            <th>状态</th>
+            <th>拒绝理由</th>
+            <th>操作</th>
+        </tr>
+        <foreach name="tasks" item="vo" index="groupIndex">
+            <tr>
+                <td>{$vo.task_no}</td>
+                <td>{$vo.task_name}</td>
+                <td>{$vo.name}</td>
+                <td>{$vo.task_type}</td>
+                <td>{$vo.product_price}</td>
+                <td>{$vo.task_num}</td>
+                <td>{$vo.commission}</td>
+                <td>{$vo.total_money}</td>
+                <td>{$vo.com_count}</td>
+                <td>{:task_status($vo.status)}</td>
+                <td>{$vo.reject_reason}</td>
+                <td>
+                    <if condition="$vo.status == 2">
+                        <a class="btn btn-xs btn-primary" href="{:url('task/edit_first')}?task_no={$vo.task_no}">编辑</a>
+                    <else/>
+                        <a class="btn btn-xs btn-primary" href="{:url('task/view')}?task_no={$vo.task_no}">查看</a>
+                    </if>
+                </td>
+            </tr>
+        </foreach>
+    </table>
+    <div style="width: 100%;height: 60px;"></div>
+    <include file="public@page" />
+</div>

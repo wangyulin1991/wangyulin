@@ -1,0 +1,92 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style>
+
+    body{padding: 0;margin: 0;}
+    .d_search{width: 100%;min-height: 140px;line-height: 70px; background: #ffffff;}
+
+    .list{margin-top: 20px; width: 100%;min-height:500px;background: #ffffff;padding: 20px 20px 40px 20px;box-sizing: border-box;position: relative;}
+    .p2{line-height: 40px;font-size: 20px;font-weight: bold;margin: 0;}
+    .t_first{width: 100%;text-align: center;border-collapse: collapse;}
+    .t_first tr{height: 40px;font-size: 12px;line-height: 40px;color: #a0a0a0;}
+    .t_first tr:nth-child(2n) {background: #f6f6f6;}
+    .t_first tr td{height: 40px; border-bottom: solid 1px #a0a0a0;}
+    .t_first th{color: #6e6e6e;font-weight: normal;border-bottom: solid 1px #a0a0a0;line-height: 40px;
+        font-size: 13px;}
+    .td{color: red;}
+    select{width: 150px;height: 30px;border: solid 1px #9f9f9f;border-radius: 5px;}
+    input{width: 150px;height: 30px;border: solid 1px #9f9f9f;border-radius: 5px}
+
+    .btn_search{width: 70px;height: 30px;border: none; border-radius: 5px;background: #2b2de0;color: #ffffff;}
+    .btn_add{display: inline-block; width: 100px;height: 30px;line-height: 30px;text-align: center;text-decoration: none; border: none; border-radius: 5px;background: #fe0000;color: #ffffff;}
+
+    label{margin-left: 15px;color: #6e6e6e}.daohang{width: 100%;height: 30px;line-height: 30px;padding-left: 15px;padding-top: 10px;}
+</style>
+<script type="text/javascript" src="__TMPL__/public/assets/js/jquery-1.10.2.min.js"></script>
+<script language="javascript" type="text/javascript" src="__TMPL__/public/assets/home/My97DatePicker/WdatePicker.js"></script>
+<div class="d_search">
+    <div class="daohang"><span>订单管理</span> > <span>异常的订单</span></div>
+    <form action="{:url('grabTask/ex_index')}" method="get">
+        <input type="hidden" name="action" value="index">
+        <label>抢单时间：</label>
+        <input class="Wdate" type="text" id="start_time" style="height: 30px;" onclick="selecttime(1)" name="start_time" value="{$start_time|default=''}"> -
+        <input class="Wdate" type="text" id="end_time" style="height: 30px;" onclick="selecttime(2)" name="end_time" value="{$end_time|default=''}">
+        <label>店铺名称：</label>
+        <input type="text" name="shop_name" value="{$shop_name|default=''}">
+        <label>订单编号：</label>
+        <input type="text" name="order_no" value="{$order_no|default=''}"><br/>
+        <label>问题描述：</label>
+        <input type="text" name="desc" value="{$desc|default=''}">
+        <button type="submit" class="btn_search">搜索</button>
+        <button type="button" class="btn_search" style="background: red" onclick="window.location.href='{:url(\'grabTask/ex_index\')}'">清空</button>
+    </form>
+</div>
+<div class="list">
+    <table class="t_first">
+        <tr>
+            <th>日期</th>
+            <th>店铺名</th>
+            <th>任务首图</th>
+            <th>关键词</th>
+            <th>订单编号</th>
+            <th>拍单账号</th>
+            <th>金额</th>
+            <th>状态</th>
+            <!--<th>操作</th>-->
+        </tr>
+        <foreach name="$orders" item="vo" index="groupIndex">
+            <tr>
+                <td>{:date('Y-m-d H:i:s', $vo.create_time)}</td>
+                <td>{$vo.shop_name}</td>
+                <td width="150px"><img src="{:cmf_get_image_preview_url($vo.product_img)}" width="15%"></td>
+                <td>{$vo.keyword}</td>
+                <td>{$vo.order_number}</td>
+                <td>{$vo.user_login}</td>
+                <td>{$vo.amount}</td>
+                <td>{:get_codes($vo.status, ['进行中','待审核','未通过','已打款','已结束','已过期'])}</td>
+                <!--<td>
+                    <if condition="$vo.status == 1">
+                        <a href="{:url('grab_task/audit', array('id'=>$vo['id']))}">审核</a>
+                    </if>
+                </td>-->
+            </tr>
+        </foreach>
+    </table>
+    <div style="width: 100%;height: 60px;"></div>
+    <div>共{$total}条&nbsp;&nbsp; 总金额{$money}元</div>
+    <include file="public@page" />
+</div>
+<script>
+    function selecttime(flag){
+        if(flag==1){
+            var endTime = $("#end_time").val();
+            if(endTime != ""){
+                WdatePicker({dateFmt:'yyyy-MM-dd HH:00:00',maxDate:endTime})}else{
+                WdatePicker({dateFmt:'yyyy-MM-dd HH:00:00'})}
+        }else{
+            var startTime = $("#start_time").val();
+            if(startTime != ""){
+                WdatePicker({dateFmt:'yyyy-MM-dd HH:00:00',minDate:startTime})}else{
+                WdatePicker({dateFmt:'yyyy-MM-dd HH:00:00'})}
+        }
+    }
+</script>

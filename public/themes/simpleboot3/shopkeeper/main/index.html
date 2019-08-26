@@ -1,0 +1,108 @@
+<!--d_tab 面板部分 用户信息-->
+<link href="__TMPL__/public/assets/css/base.css" rel="stylesheet" type="text/css">
+<link href="__TMPL__/public/assets/css/index.css" rel="stylesheet" type="text/css">
+<style>
+    .line{width: 100%;height: 3px;background: url("__TMPL__/public/assets/home/images/line.png") no-repeat;background-size: 100% 100%;}
+</style>
+<div class="d_tab">
+    <div class="line"></div>
+    <div class="tab_btm p20 w">
+        <div class="t_left">
+            <div class="t1 t3">
+                <img src="__TMPL__/public/assets/home/images/user.png">
+                <span>{$user.user_nickname}</span>
+            </div>
+            <div class="t1">
+                <img src="__TMPL__/public/assets/home/images/zfb.png">
+                <span>支付宝：<em>{$user.alipay_no}</em></span>
+            </div>
+            <div class="t1">
+                <img src="__TMPL__/public/assets/home/images/qq.png">
+                <span>QQ：<em>{$user.qq}</em></span>
+            </div>
+
+            <p class="p2">注册时间：{:date('Y-m-d H:i', $user.create_time)}</p>
+        </div>
+        <div class="t_right p10 ml80">
+            <img src="__TMPL__/public/assets/home/images/tb1.png">
+            <p class="p1">{$user.money}</p>
+            <p class="p2">账户余额(元)</p>
+        </div>
+        <div class="t_right p10">
+            <img src="__TMPL__/public/assets/home/images/tb2.png">
+            <p class="p1">{$task_count}</p>
+            <p class="p2">进行中任务</p>
+        </div>
+        <div class="t_right p10">
+            <img src="__TMPL__/public/assets/home/images/tb3.png">
+            <p class="p1">{$order_count}</p>
+            <p class="p2">进行中订单</p>
+        </div>
+    </div>
+</div>
+<div class="clear"></div>
+
+<!--任务动态-->
+<div class="d_tab mt10">
+    <div class="line"></div>
+    <div class="tab_btm p30">
+        <div class="d_title">
+            <img src="__TMPL__/public/assets/home/images/tb4.png">任务动态
+        </div>
+
+        <table class="table">
+            <tr>
+                <th>任务编号</th>
+                <th>任务名称</th>
+                <th>关联店铺</th>
+                <th>店铺类型</th>
+                <th>发放数量</th>
+                <th>已完成</th>
+                <th>状态</th>
+                <th>操作</th>
+            </tr>
+            <foreach name="$tasks" item="vo">
+                <tr>
+                    <td>{$vo.task_no}</td>
+                    <td>{$vo.task_name}</td>
+                    <td>{$vo.name}</td>
+                    <td>{$vo.task_type}</td>
+                    <td>{$vo.task_num}</td>
+                    <td>{$vo.com_count}</td>
+                    <td>{:task_status($vo.status)}</td>
+                    <td><a href="{:url('task/view')}?task_no={$vo.task_no}">查看</a></td>
+                </tr>
+            </foreach>
+
+        </table>
+    </div>
+</div>
+
+<!--资金动态-->
+<div class="d_tab mt10">
+    <div class="line"></div>
+    <div class="tab_btm p30">
+        <div class="d_title">
+            <img src="__TMPL__/public/assets/home/images/tb5.png">资金动态
+        </div>
+        <table class="table2">
+            <tr>
+                <th>订单编号</th>
+                <th>充值金额</th>
+                <th>充值时间</th>
+                <th>账户余额</th>
+                <th>状态</th>
+            </tr>
+            <foreach name="$records" item="vo">
+                <tr>
+                    <td>{$vo.order_no}</td>
+                    <td>{$vo.money}</td>
+                    <td>{:date('Y-m-d H:i:s', $vo.create_time)}</td>
+                    <td>{$vo.balance}</td>
+                    <td>{:get_code($vo.status, '已到账', '未到账')}</td>
+                </tr>
+            </foreach>
+
+        </table>
+    </div>
+</div>

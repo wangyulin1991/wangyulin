@@ -1,0 +1,176 @@
+<include file="public@header" />
+</head>
+<body>
+<div class="wrap">
+    <ul class="nav nav-tabs">
+        <li><a href="{:url('Process/actionIndex')}">动作列表</a></li>
+        <li class="active"><a href="javascript:void(0)">添加动作</a></li>
+    </ul>
+    <form method="post" class="form-horizontal js-ajax-form margin-top-20" action="{:url('Process/actionEdit')}">
+        <div class="form-group">
+            <label for="input-action_name" class="col-sm-2 control-label"><span class="form-required">*</span>名称</label>
+            <div class="col-md-6 col-sm-10">
+                <input type="text" class="form-control" id="input-action_name" name="action_name" value="{$data.action_name}">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="input-step_type" class="col-sm-2 control-label"><span class="form-required">*</span>类型</label>
+            <div class="col-md-6 col-sm-10">
+                <select id="input-step_type" class="form-control" name="action_type">
+                    <option value="0">请选择</option>
+                    <volist name="types" id="type">
+                        <if condition="$type eq $data.action_type">
+                            <option value="{$type}" selected>{$type}</option>
+                        <else/>
+                            <option value="{$type}">{$type}</option>
+                        </if>
+
+                    </volist>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="input-status" class="col-sm-2 control-label"><span class="form-required">*</span>状态</label>
+            <div class="col-md-6 col-sm-10">
+                <select class="form-control" name="status" id="input-status">
+                    <if condition="$data.status eq 1">
+                        <option value="0">否</option>
+                        <option value="1" selected>是</option>
+                        <else/>
+                        <option value="0">否</option>
+                        <option value="1">是</option>
+                    </if>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="input-status" class="col-sm-2 control-label"><span class="form-required">*</span>提交内容</label>
+            <div class="col-md-6 col-sm-10">
+                <table class="table table-hover table-bordered" id="action-input">
+                    <thead>
+                    <tr>
+                        <th>参数名</th>
+                        <th>名称</th>
+                        <th>类型</th>
+                        <th>提示</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <notempty name="$data.action_input">
+                            <foreach name="$data.action_input" item="input" key="k">
+                                <tr>
+                                    <td><input name="action_input[{$k}][param_name]" value="{$input.param_name}"></td>
+                                    <td><input name="action_input[{$k}][input_type_name]" value="{$input.input_type_name}"></td>
+                                    <td>
+                                        <select name="action_input[{$k}][input_type]">
+                                            <if condition="$input.input_type eq 'image'">
+                                                <option value="image" selected>上传图片</option><option value="input">输入框</option>
+                                                <elseif condition="$input.input_type eq 'input'"/>
+                                                <option value="image">上传图片</option><option value="input" selected>输入框</option>
+                                                <else/>
+                                                <option value="image">上传图片</option><option value="input">输入框</option>
+                                            </if>
+                                        </select>
+                                    </td>
+                                    <td><input name="action_input[{$k}][input_type_info]" value="{$input.input_type_info}"></td>
+                                </tr>
+                            </foreach>
+                        </notempty>
+                    </tbody>
+                </table>
+                <input type="button" class="form-control btn-primary" value="添加" id="addInput">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="input-status" class="col-sm-2 control-label"><span class="form-required">*</span>商户提交</label>
+            <div class="col-md-6 col-sm-10">
+                <table class="table table-hover table-bordered" id="shopkeeper-input">
+                    <thead>
+                    <tr>
+                        <th>参数名</th>
+                        <th>名称</th>
+                        <th>上传类型</th>
+                        <th>提示</th>
+                        <th>作用类型</th>
+                        <th>验证字段</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <notempty name="$data.shop_action_input">
+                            <foreach name="$data.shop_action_input" item="input" key="k">
+                                <tr>
+                                    <td><input name="shop_action_input[{$k}][param_name]" value="{$input.param_name}"></td>
+                                    <td><input name="shop_action_input[{$k}][input_type_name]" value="{$input.input_type_name}"></td>
+                                    <td>
+                                        <select name="shop_action_input[{$k}][input_type]">
+                                            <if condition="$input.input_type eq 'image'">
+                                                <option value="image" selected>上传图片</option><option value="input">输入框</option>
+                                                <elseif condition="$input.input_type eq 'input'"/>
+                                                <option value="image">上传图片</option><option value="input" selected>输入框</option>
+                                                <else/>
+                                                <option value="image">上传图片</option><option value="input">输入框</option>
+                                            </if>
+                                        </select>
+                                    </td>
+                                    <td><input name="shop_action_input[{$k}][input_type_info]" value="{$input.input_type_info}"></td>
+                                    <td>
+                                        <select name="shop_action_input[{$k}][input_effect_type]">
+                                            <if condition="$input.input_effect_type eq 'show'">
+                                                <option value="show" selected>仅显示</option><option value="check">验证</option>
+                                                <elseif condition="$input.input_effect_type eq 'check'"/>
+                                                <option value="show">仅显示</option><option value="check" selected>验证</option>
+                                                <else/>
+                                                <option value="show">仅显示</option><option value="check">验证</option>
+                                            </if>
+                                        </select>
+                                    </td>
+                                    <td><input name="shop_action_input[{$k}][input_effect_info]" value="{$input.input_effect_info}"></td>
+
+                                </tr>
+                            </foreach>
+                        </notempty>
+                    </tbody>
+                </table>
+                <input type="button" class="form-control btn-primary" value="添加" id="addShopkeeperInput">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <input type="hidden" name="id" value="{$data.id}">
+                <button type="submit" class="btn btn-primary js-ajax-submit">{:lang('EDIT')}</button>
+            </div>
+        </div>
+    </form>
+</div>
+<script src="__STATIC__/js/admin.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#addInput').on('click',function () {
+            var index = $('#action-input tbody tr').length;
+            var html = '<tr>';
+            html += '<td><input name="action_input[' + index + '][param_name]" value=""> </td>';
+            html += '<td><input name="action_input[' + index + '][input_type_name]" value=""> </td>';
+            html += '<td><select name="action_input[' + index + '][input_type]"><option value="image">上传图片</option><option value="input">输入框</option></select></td>';
+            html += '<td><input name="action_input[' + index + '][input_type_info]" value=""> </td>';
+            html += '</tr>';
+            $('#action-input tbody').append(html);
+        });
+    });
+    $(document).ready(function () {
+        $('#addShopkeeperInput').on('click',function () {
+            var index = $('#shopkeeper-input tbody tr').length;
+            var html = '<tr>';
+            html += '<td><input name="shop_action_input[' + index + '][param_name]" value=""> </td>';
+            html += '<td><input name="shop_action_input[' + index + '][input_type_name]" value=""> </td>';
+            html += '<td><select name="shop_action_input[' + index + '][input_type]"><option value="image">上传图片</option><option value="input">输入框</option></select></td>';
+            html += '<td><input name="shop_action_input[' + index + '][input_type_info]" value=""> </td>';
+            html += '<td><select name="shop_action_input[' + index + '][input_effect_type]"><option value="show">仅显示</option><option value="check">验证</option></select></td>';
+            html += '<td><input name="shop_action_input[' + index + '][input_effect_info]" value=""> </td>';
+            html += '</tr>';
+            $('#shopkeeper-input tbody').append(html);
+        });
+    });
+</script>
+</body>
+</html>

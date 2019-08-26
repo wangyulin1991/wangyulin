@@ -1,0 +1,170 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="__TMPL__/public/assets/js/jquery-1.10.2.min.js"></script>
+<script language="javascript" type="text/javascript" src="__TMPL__/public/assets/home/My97DatePicker/WdatePicker.js"></script>
+
+<style>
+
+body{padding: 0;margin: 0;}
+.d_search{width: 100%;height: 140px;line-height: 70px; background: #ffffff;}
+
+.list{margin-top: 20px; width: 100%;min-height:500px;background: #ffffff;padding: 20px 20px 40px 20px;box-sizing: border-box;position: relative;}
+.p2{line-height: 40px;font-size: 20px;font-weight: bold;margin: 0;}
+.t_first{width: 100%;text-align: center;border-collapse: collapse;}
+.t_first tr{height: 40px;font-size: 12px;line-height: 40px;color: #a0a0a0;}
+.t_first tr:nth-child(2n) {background: #f6f6f6;}
+.t_first tr td{height: 40px; border-bottom: solid 1px #a0a0a0;}
+.t_first th{color: #6e6e6e;font-weight: normal;border-bottom: solid 1px #a0a0a0;line-height: 40px;
+    font-size: 13px;}
+.td{color: red;}
+select{width: 150px;height: 30px;border: solid 1px #9f9f9f;border-radius: 5px;}
+input{width: 150px;height: 30px;border: solid 1px #9f9f9f;border-radius: 5px}
+
+.btn_search{width: 70px;height: 30px;border: none; border-radius: 5px;background: #2b2de0;color: #ffffff;}
+.btn_add{display: inline-block; width: 100px;height: 30px;line-height: 30px;text-align: center;text-decoration: none; border: none; border-radius: 5px;background: #fe0000;color: #ffffff;}
+
+label{margin-left: 15px;color: #6e6e6e}.daohang{width: 100%;height: 30px;line-height: 30px;padding-left: 15px;padding-top: 10px;}
+</style>
+<div class="d_search">
+<div class="daohang"><span>订单管理</span> > <span>预约的订单</span></div>
+<form action="{:url('grabTask/appointment')}" method="get">
+    <input type="hidden" name="action" value="index">
+    <label>预约时间：</label>
+    <input class="Wdate" type="text" id="start_time" style="height: 30px;" onclick="selecttime(1)" name="start_time" value="{$start_time|default=''}"> -
+    <input class="Wdate" type="text" id="end_time" style="height: 30px;" onclick="selecttime(2)" name="end_time" value="{$end_time|default=''}">
+    <label>店铺名称：</label>
+    <input type="text" name="shop_name" value="{$shop_name|default=''}">
+    <label>预约状态：</label>
+    <select name="status">
+        <option value="-1">--全部--</option>
+        <option value="0" <if condition="$status === '0'">selected</if>>拒绝</option>
+        <option value="1" <if condition="$status == 1">selected</if>>通过</option>
+    </select>
+    <button type="submit" class="btn_search">搜索</button>
+    <button type="button" class="btn_search" style="background: red" onclick="window.location.href='{:url(\'grabTask/appointment\')}'">清空</button>
+</form>
+</div>
+<div class="list">
+<table class="t_first">
+    <tr>
+        <th width="15%">日期</th>
+        <th>店铺名</th>
+        <th>任务标题</th>
+        <th>任务首图</th>
+        <th>关键词</th>
+        <th>预约账号</th>
+        <th>旺旺号</th>
+        <th>状态</th>
+        <th>操作</th>
+    </tr>
+    <foreach name="$orders" item="vo" index="groupIndex">
+        <tr style="position:relative;">
+            <td>{:date('Y-m-d H:i:s', $vo.create_time)}</td>
+            <td>{$vo.shop_name}</td>
+            <td>{$vo.task_name}</td>
+            <td width="150px"><img src="{:cmf_get_image_preview_url($vo.product_img)}" width="15%"></td>
+            <td>{$vo.keyword}</td>
+            <td>{$vo.user_login}</td>
+            <td>
+                <a href="javascript:;" onclick="showImg(this)" style="display: block;">{$vo.taobao_ww}</a>
+                <if condition="!empty($vo.query_img)">
+                    <div style="display:none;width: 50%;position:absolute;right:26%;">
+                        <img src="{:cmf_get_image_preview_url($vo.query_img)}" onclick="closeImg(this)" width="100%" style="cursor: pointer"/>
+                    </div>
+                </if>
+            </td>
+            <td>{:get_codes($vo.status, ['拒绝','通过', '过期'])}</td>
+            <td>
+                <if condition="$vo.status === 0">
+                    已拒绝
+                <elseif condition="$vo.status === 1"/>
+<!--                        <a href="{:url('grab_task/audit_appointment', array('id'=>$vo['id'],'status'=>2))}" onClick="return confirm('确定拒绝?');">拒绝</a>-->
+                        <a href="javascript:;" data-id="{$vo.id}" data-status="{$vo.status}" class="refuse-btn btn btn-primary">拒绝</a>
+                    <elseif condition="$vo.status === 2"/>
+                        过期
+                    </if>
+                </td>
+            </tr>
+        </foreach>
+    </table>
+    <div style="width: 100%;height: 60px;"></div>
+    <div>共{$total}条&nbsp;&nbsp;</div>
+    <include file="public@page" />
+</div>
+<script type="text/javascript">
+    //全局变量
+    var GV = {
+        ROOT: "__ROOT__/",
+        WEB_ROOT: "__WEB_ROOT__/",
+        JS_ROOT: "static/js/",
+        APP: '{$Request.module}'/*当前应用名*/
+    };
+</script>
+<script src="__STATIC__/js/wind.js"></script>
+<script src="__STATIC__/js/admin.js"></script>
+<script>
+    function selecttime(flag){
+        if(flag==1){
+            var endTime = $("#end_time").val();
+            if(endTime != ""){
+                WdatePicker({dateFmt:'yyyy-MM-dd HH:00:00',maxDate:endTime})}else{
+                WdatePicker({dateFmt:'yyyy-MM-dd HH:00:00'})}
+        }else{
+            var startTime = $("#start_time").val();
+            if(startTime != ""){
+                WdatePicker({dateFmt:'yyyy-MM-dd HH:00:00',minDate:startTime})}else{
+                WdatePicker({dateFmt:'yyyy-MM-dd HH:00:00'})}
+        }
+    }
+
+    //点击旺旺号显示查号图片
+    function showImg(obj) {
+        $(obj).next().toggle();
+    }
+    function closeImg(e){
+        $(e).parent().hide();
+    }
+
+    $(document).ready(function() {
+        $('.refuse-btn').on('click',function () {
+            var refuseId = $(this).data('id');
+            console.log(refuseId);
+            $.ajax({
+                url: "{:url('grabTask/beforeRefuse')}",
+                data: {'refuseId':refuseId},
+                type: 'POST',
+                dateType: 'json',
+                success: function (data) {
+                    if (data != null) {
+                        if (data.code == 400) {
+                            alert(data.msg);
+                        } else{
+                            openIframeLayer("{:url('grabTask/refuseDetail')}?id=" + refuseId, '拒绝信息选择', {
+                                area: ['800px', '300px'],
+                                offset: '100px',
+                                btn: ['确定'],
+                                btnAlign:'c',
+                                yes: function (index, layero) {
+                                    var iframeWin  = window[layero.find('iframe')[0]['name']];
+                                    var data = iframeWin.getAuditData();
+                                    $.post('{:url("GrabTask/refuse_appointment")}',{id:data.id,refuse_remark:data.refuse_remark},function (res) {
+                                        if (res.code == 200) {
+                                            alert(res.msg);
+                                            window.location='{:url("GrabTask/appointment")}'
+                                        }else {
+                                            alert(res.msg);
+                                        }
+                                        console.log(res)
+                                    },'json');
+
+                                },
+
+                            });
+                        }
+                    }
+                }
+            });
+
+        });
+
+    });
+</script>

@@ -1,0 +1,124 @@
+<include file="public@header" />
+</head>
+<body>
+	<div class="wrap js-check-wrap">
+		<ul class="nav nav-tabs">
+			<li class="active"><a>商家列表</a></li>
+			<li><a href="{:url('shopkeeper/add')}">添加商家</a></li>
+		</ul>
+        <form class="well form-inline margin-top-20" method="get" action="{:url('shopkeeper/index')}">
+            分站:
+            <select class="form-control" name="section_id" style="width: 140px;">
+                <option value=''>--请选择所属分站--</option>
+                <foreach name="$sections" item="vo">
+                    <option value='{$vo.id}' <if condition="$vo.id == $section_id">selected</if>>{$vo.name}</option>
+                </foreach>
+            </select>
+            注册时间:
+            <input type="text" class="form-control js-bootstrap-datetime" name="start_time" value="{$start_time|default=''}" style="width: 140px;" autocomplete="off">-
+            <input type="text" class="form-control js-bootstrap-datetime" name="end_time" value="{$end_time|default=''}" style="width: 140px;" autocomplete="off">
+            &nbsp;手机号:
+            <input type="text" class="form-control" name="mobile" style="width: 120px;" value="{:input('request.mobile/s','')}" placeholder="请输入{:lang('MOBILE')}">
+            &nbsp;QQ:
+            <input type="text" class="form-control" name="qq" style="width: 120px;" value="{:input('request.qq/s','')}" placeholder="请输入{:lang('QQ')}">
+            &nbsp;<input type="submit" class="btn btn-primary" value="搜索" />
+            <a class="btn btn-danger" href="{:url('shopkeeper/index')}">清空</a>
+        </form>
+		<table class="table table-hover table-bordered">
+			<thead>
+				<tr>
+					<th width="50">ID</th>
+                    <th>账号</th>
+                    <th>手机号码</th>
+                    <th>联系人</th>
+                    <th>QQ</th>
+                    <th>绑定店铺</th>
+                    <th>支付宝账号</th>
+                    <th>银行卡</th>
+                    <th>关联任务</th>
+                    <th>账户余额</th>
+                    <th>注册时间</th>
+                    <th>最后登录时间</th>
+                    <th width="80">是否允许推荐商户</th>
+                    <th>任务是否需要审核</th>
+                    <th width="200">{:lang('ACTIONS')}</th>
+                </tr>
+            </thead>
+            <tbody>
+            <foreach name="items" item="vo" index="groupIndex">
+                <tr>
+                    <td>{$vo.id}</td>
+                    <td>{$vo.user_login}</td>
+                    <td>{$vo.mobile}</td>
+                    <td>{$vo.name}</td>
+                    <td>{$vo.qq}</td>
+                    <td>{$vo.shop_count}</td>
+                    <td>{$vo.alipay_no}</td>
+                    <td>{$vo.bank_no}</td>
+                    <td>{$vo.task_count}</td>
+                    <td>{$vo.money}</td>
+                    <td>{:date('Y-m-d H:i',$vo.create_time)}</td>
+                    <td>{:date('Y-m-d H:i',$vo.last_login_time)}</td>
+                    <td>
+                        <if condition="$vo.is_rec == 0">
+                            <span class="btn-xs btn-danger">禁止推荐</span>
+                        </if>
+                        <if condition="$vo.is_rec == 1">
+                            <span class="btn-xs btn-primary">允许推荐</span>
+                        </if>
+                    </td>
+                    <td>
+                        <if condition="$vo.task_audit == 0">
+                            <span class="btn-xs btn-danger">需审核</span>
+                        </if>
+                        <if condition="$vo.task_audit == 1">
+                            <span class="btn-xs btn-primary">直接通过</span>
+                        </if>
+                    </td>
+                    <td>
+                        <a class="btn btn-xs btn-primary" href="{:url('shopkeeper/edit',array('id'=>$vo['id']))}">编辑</a> |
+                        <if condition="$vo.user_status == 1">
+                            <a class="btn btn-xs btn-danger js-ajax-delete" data-msg="确定要冻结么？" href="{:url('shopkeeper/freeze',array('id'=>$vo['id']))}">冻结</a>
+                        <else/>
+                            <a class="btn btn-xs btn-danger js-ajax-delete" data-msg="确定要启用么？" href="{:url('shopkeeper/active',array('id'=>$vo['id']))}">启用</a>
+                        </if>|
+                        <a class="btn btn-xs btn-primary" href="{:url('shopkeeper/show_shop',array('id'=>$vo['id']))}">已绑定店铺</a>
+                        <a class="btn btn-xs btn-primary viewDetail" href="javascript:void (0)" data-cid="{$vo.id}">充值</a>
+                    </td>
+                </tr>
+
+            </foreach>
+			</tbody>
+		</table>
+        <div class="pagination">{$page}</div>
+    </div>
+	<script src="__STATIC__/js/admin.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('.viewDetail').on('click',function () {
+                var Cid = $(this).data('cid');
+                console.log(Cid);
+                openIframeLayer("{:url('shopkeeper/recharge')}?id=" + Cid, '充值', {
+                    area: ['600px', '400px'],
+                    btn: ['确定', '取消'],
+                    btnAlign:'c',
+                    yes: function (index, layero) {
+                        //do something
+                        var iframeWin  = window[layero.find('iframe')[0]['name']];
+                        var data = iframeWin.getAuditData();
+                        $.post('{:url("shopkeeper/money")}',{id:data.id,money:data.money,add_money:data.add_money,user_id:data.user_id,cash_explain:data.cash_explain},function (res) {
+                            if (res.code==200) {
+                                layer.close(index); //如果设定了yes回调，需进行手工关闭
+                                alert(res.msg);
+                                window.location='{:url("shopkeeper/index")}'
+                            }else{
+                                alert(res.msg);
+                            }
+                        },'json');
+                    },
+                });
+            });
+        });
+    </script>
+</body>
+</html>

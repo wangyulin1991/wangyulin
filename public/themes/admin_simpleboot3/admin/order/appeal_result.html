@@ -1,0 +1,22 @@
+<include file="public@header"/>
+</head>
+<body>
+<div class="wrap">
+    <form method="post" class="form-horizontal js-ajax-form margin-top-20" action="{:url('admin/order/appeal_result')}">
+        <input type="hidden" name="order_id" value="{$order_id}">
+        <div class="form-group" style="text-align: center">
+            <div class="col-md-6 col-sm-10">
+                <textarea id="input-from_name" name="appeal_result" style="width: 400px;height: 200px">{$appeal_result}</textarea>
+            </div><br>
+            <button type="submit" class="btn btn-primary">处理</button>
+        </div>
+    </form>
+</div>
+<script src="__STATIC__/js/admin.js"></script>
+<script>
+    $(function () {
+        $('#js-smtpsecure').val("{$smtp_secure|default=''}");
+    });
+</script>
+</body>
+</html>

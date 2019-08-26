@@ -1,0 +1,53 @@
+<include file="public@header" />
+</head>
+<body>
+<div class="wrap js-check-wrap">
+  <ul class="nav nav-tabs">
+    <li class="active"><a href="{:url('Process/index')}">流程列表</a></li>
+    <li><a href="{:url('Process/add')}">添加流程</a></li>
+  </ul>
+  <form class="js-ajax-form" action="{:url('Process/index')}" method="post">
+    <input type="hidden" name="SORT" value="{$sort=='asc'?'desc':'asc'}">
+    <div class="table-actions">
+      <button class="btn btn-primary btn-sm" type="submit">{:lang('SORT')}</button>
+    </div>
+    <table class="table table-hover table-bordered table-list" id="menus-table">
+      <thead>
+      <tr>
+        <th width="50">ID</th>
+        <th>流程名称</th>
+        <th>所属平台</th>
+        <th>状态</th>
+        <th>操作</th>
+      </tr>
+      </thead>
+      <tbody>
+      <volist name="processes" id="process">
+        <tr>
+          <td>{$process.id}</td>
+          <td>{$process.name}</td>
+          <td>{$process.platform_name}</td>
+          <td>{$process.status?'开启':'关闭'}</td>
+          <td>{$process.str_manage}</td>
+        </tr>
+      </volist>
+      </tbody>
+    </table>
+    <div class="table-actions">
+      <button class="btn btn-primary btn-sm" type="submit">{:lang('SORT')}</button>
+    </div>
+  </form>
+</div>
+<script src="__STATIC__/js/admin.js"></script>
+<script>
+    $(document).ready(function() {
+        Wind.css('treeTable');
+        Wind.use('treeTable', function() {
+            $("#menus-table").treeTable({
+                indent : 20
+            });
+        });
+    });
+</script>
+</body>
+</html>

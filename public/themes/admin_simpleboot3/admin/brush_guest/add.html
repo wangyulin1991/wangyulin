@@ -1,0 +1,338 @@
+<include file="public@header"/>
+<style type="text/css">
+  .pic-list li {
+    margin-bottom: 5px;
+  }
+</style>
+<script type="text/html" id="photos-item-tpl">
+  <li id="saved-image{id}">
+    <input id="photo-{id}" type="hidden" name="photo_urls[]" value="{filepath}">
+    <input class="form-control" id="photo-{id}-name" type="text" name="photo_names[]" value="{name}"
+           style="width: 200px;" title="图片名称">
+    <img id="photo-{id}-preview" src="{url}" style="height:36px;width: 36px;"
+         onclick="imagePreviewDialog(this.src);">
+    <a href="javascript:uploadOneImage('图片上传','#photo-{id}');">替换</a>
+    <a href="javascript:(function(){$('#saved-image{id}').remove();})();">移除</a>
+  </li>
+</script>
+<script type="text/html" id="files-item-tpl">
+  <li id="saved-file{id}">
+    <input id="file-{id}" type="hidden" name="file_urls[]" value="{filepath}">
+    <input class="form-control" id="file-{id}-name" type="text" name="file_names[]" value="{name}"
+           style="width: 200px;" title="文件名称">
+    <a id="file-{id}-preview" href="{preview_url}" target="_blank">下载</a>
+    <a href="javascript:uploadOne('文件上传','#file-{id}','file');">替换</a>
+    <a href="javascript:(function(){$('#saved-file{id}').remove();})();">移除</a>
+  </li>
+</script>
+</head>
+<body>
+<div class="wrap js-check-wrap">
+  <ul class="nav nav-tabs">
+    <li><a href="{:url('BrushGuest/index')}">刷客列表</a></li>
+    <li class="active"><a href="{:url('BrushGuest/add')}">添加刷客</a></li>
+  </ul>
+  <form action="{:url('BrushGuest/add')}" method="post" class="form-horizontal js-ajax-form margin-top-20">
+    <div class="row">
+      <div class="col-md-12">
+        <table class="table table-bordered">
+          <tr>
+            <th>真实姓名<span class="form-required">*</span></th>
+            <td>
+              <input class="form-control" type="text" name="real_name"
+                     id="real_name" required value="" placeholder="请输入真实姓名"/>
+            </td>
+          </tr>
+          <tr>
+            <th>性别<span class="form-required">*</span></th>
+            <td class="form-inline">
+              <input class="form-control" type="radio" name="gender"
+                     required value="1" checked/> 男
+              <input class="form-control" type="radio" name="gender"
+                     required value="2"/> 女
+            </td>
+          </tr>
+          <tr>
+            <th>职业<span class="form-required">*</span></th>
+            <td class="form-inline">
+              <select name="job" id="job" class="form-control" style="width: 150px;">
+                <option value="0">---请选择---</option>
+                <foreach name="jobs" item="job">
+                  <option value="{$job.id}">{$job.job_name}</option>
+                </foreach>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <th>手机号码<span class="form-required">*</span></th>
+            <td>
+              <input class="form-control" type="text" name="cellphone" id="cellphone" value=""
+                     placeholder="请输入手机号">
+            </td>
+          </tr>
+          <tr>
+            <th>推荐人手机号</th>
+            <td>
+              <input class="form-control" type="text" name="f_cellphone" id="f_cellphone" value=""
+                     placeholder="请输入推荐人手机号">
+            </td>
+          </tr>
+          <tr class="form-inline">
+            <th>所在地区<span class="form-required">*</span></th>
+            <td>
+              <select class="form-control area-select" id="province" name="province" data-next="city" style="width: 200px"></select>
+              <select class="form-control area-select" id="city" name="city" data-next="region" style="width: 200px"></select>
+              <select class="form-control" id="region" name="region"  style="width: 200px"></select>
+            </td>
+          </tr>
+          <tr>
+            <th>QQ号<span class="form-required">*</span></th>
+            <td>
+              <input class="form-control" type="text" name="qq" id="qq" value=""
+                     placeholder="请输入QQ账号">
+            </td>
+          </tr>
+          <tr>
+            <th>旺旺号<span class="form-required">*</span></th>
+            <td><input class="form-control" type="text" name="taobao_ww" id="taobao_ww" value=""
+                       placeholder="请输入淘宝旺旺号"></td>
+          </tr>
+          <tr>
+            <th>银行卡号<span class="form-required">*</span></th>
+            <td><input class="form-control" type="text" name="bank_number" id="bank_number" value=""
+                       placeholder="请填写银行卡号"></td>
+          </tr>
+          <tr>
+            <th>淘宝信誉等级<span class="form-required">*</span></th>
+            <td>
+              <p class="select-display"><span class="level-show"><img src="{$taobao_credit_level[1]['logo']}"></span><span class="fa fa-filter normal" style="padding-left: 10px"></span> </p>
+              <div class="select-box">
+              <foreach name="taobao_credit_level" item="level" key="k">
+                <in name="level.id" value="1,11,21,31,41">
+                  <ul class="select-ul">
+                </in>
+                <li data-val="{$level.id}"><img src="{$level.logo}"></li>
+                <in name="level.id" value="5,15,25,35,45">
+                  </ul>
+                </in>
+              </foreach>
+                <div style="clear:both;"></div>
+              </div>
+              <input class="form-control" type="hidden" id="taobao_level_credit" name="taobao_level_credit" value=""
+                       placeholder="请输入淘宝等级">
+            </td>
+          </tr>
+          <tr>
+            <th>淘龄<span class="form-required">*</span></th>
+            <td><input class="form-control" type="text" name="taobao_age" id="taobao_age" value=""
+                       placeholder="请输入淘龄"></td>
+          </tr>
+          <tr>
+            <th>淘龄淘气值<span class="form-required">*</span></th>
+            <td>
+              <input id="taobao_tq" class="form-control" type="hidden" name="taobao_tq"
+                     value="">
+
+              <a href="javascript:uploadOneImage('图片上传','#taobao_tq');">
+                <img src="__TMPL__/public/assets/images/default-thumbnail.png"
+                     id="taobao_tq-preview"
+                     width="135" style="cursor: pointer"/>
+              </a>
+              <input type="button" class="btn btn-sm btn-cancel-thumbnail" value="取消图片">
+            </td>
+          </tr>
+          <tr>
+            <th>淘宝评价管理电脑版<span class="form-required">*</span></th>
+            <td class="form-inline">
+              <input id="taobao_photo" class="form-control" type="hidden" name="taobao_photo"
+                     value="">
+
+              <a href="javascript:uploadOneImage('图片上传','#taobao_photo');">
+                <img src="__TMPL__/public/assets/images/default-thumbnail.png"
+                     id="taobao_photo-preview"
+                     width="135" style="cursor: pointer"/>
+              </a>
+              <input type="button" class="btn btn-sm btn-cancel-thumbnail" value="取消图片">
+            </td>
+          </tr>
+          <tr>
+            <th>支付宝实名截图<span class="form-required">*</span></th>
+            <td class="form-inline">
+              <input id="alipay_photo" class="form-control" type="hidden" name="alipay_photo"
+                     value="">
+
+              <a href="javascript:uploadOneImage('图片上传','#alipay_photo');">
+                <img src="__TMPL__/public/assets/images/default-thumbnail.png"
+                     id="alipay_photo-preview"
+                     width="135" style="cursor: pointer"/>
+              </a>
+              <input type="button" class="btn btn-sm btn-cancel-thumbnail" value="取消图片">
+            </td>
+          </tr>
+          <tr>
+            <th>京东账号</th>
+            <td><input class="form-control" type="text" name="jd_account" value=""
+                       placeholder="请输入京东账号"></td>
+          </tr>
+          <tr>
+            <th>京东信誉等级</th>
+            <td>
+              <select name="jd_level_credit" class="form-control">
+                <option value="0">请选择</option>
+                <foreach name="jd_credit_level" item="level" key="k">
+                  <option value="{$level.id}">{$level.text}</option>
+                </foreach>
+              </select>
+          </tr>
+          <tr>
+            <th>京东实名截图</th>
+            <td class="form-inline">
+              <input type="hidden" name="jd_photo" id="jd_photo" value="">
+              <a href="javascript:uploadOneImage('图片上传','#jd_photo');">
+                <img src="__TMPL__/public/assets/images/default-thumbnail.png"
+                     id="jd_photo-preview"
+                     width="135" style="cursor: pointer"/>
+              </a>
+              <input type="button" class="btn btn-sm btn-cancel-thumbnail" value="取消图片">
+            </td>
+          </tr>
+          <tr>
+            <th>身份证号码</th>
+            <td><input class="form-control" type="text" name="id_card_no" value=""
+                       placeholder="请输入身份证号码"></td>
+          </tr>
+          <tr>
+            <th>身份证正面</th>
+            <td class="form-inline">
+              <input type="hidden" name="id_card_first" id="id_card_first" value="">
+              <a href="javascript:uploadOneImage('图片上传','#id_card_first');">
+                <img src="__TMPL__/public/assets/images/default-thumbnail.png"
+                     id="id_card_first-preview"
+                     width="135" style="cursor: pointer"/>
+              </a>
+              <input type="button" class="btn btn-sm btn-cancel-thumbnail" value="取消图片">
+            </td>
+          </tr>
+          <tr>
+            <th>身份证反面</th>
+            <td class="form-inline">
+              <input type="hidden" name="id_card_second" id="id_card_second" value="">
+              <a href="javascript:uploadOneImage('图片上传','#id_card_second');">
+                <img src="__TMPL__/public/assets/images/default-thumbnail.png"
+                     id="id_card_second-preview"
+                     width="135" style="cursor: pointer"/>
+              </a>
+              <input type="button" class="btn btn-sm btn-cancel-thumbnail" value="取消图片">
+            </td>
+          </tr>
+        </table>
+        <hook name="portal_admin_article_edit_view_main"/>
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-10">
+            <button type="submit" class="btn btn-primary js-ajax-submit">{:lang('ADD')}</button>
+            <a class="btn btn-default" href="{:url('BrushGuest/auditList')}">{:lang('BACK')}</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<style>
+  .select-box{
+    width: 700px;
+    border: 1px solid #cccccc;
+    display: none;
+    position: absolute;
+    z-index: 99;
+    background: #ffffff;
+  }
+  .select-ul{
+    float: left;
+  }
+  .select-ul li {
+    text-decoration: none;
+    list-style: none;
+  }
+  .select-ul li:hover {
+    background: #2B81AF;
+  }
+</style>
+<script>
+    $('.select-display').on('click',function () {
+        $(this).parent().find('.select-box').toggle();
+    });
+    $('.select-ul li').on('click',function () {
+        var val = $(this).data('val');
+        var img = $(this).html();
+        $('.select-box').hide();
+        $('#taobao_level_credit').val(val);
+        $('.select-display').find('.level-show').html(img);
+    });
+</script>
+<script type="text/javascript" src="__STATIC__/js/admin.js"></script>
+<script type="text/javascript">
+    $(function () {
+        $.get("{:url('/api/home/area/index')}",function (data) {
+            if (data.code==1) {
+              var province = '';
+              for(var i=0;i<data.data.province.length;i++){
+                  province += '<option value="'+data.data.province[i].id+'">' +data.data.province[i].areaName+'</option>';
+              }
+
+              var city = '';
+              for(var i=0;i<data.data.city.length;i++){
+                  city += '<option value="'+data.data.city[i].id+'">' +data.data.city[i].areaName+'</option>';
+              }
+
+              var region = '';
+              for(var i=0;i<data.data.region.length;i++){
+                  region += '<option value="'+data.data.region[i].id+'">' +data.data.region[i].areaName+'</option>';
+              }
+
+              $('#province').html(province);
+              $('#city').html(city);
+              $('#region').html(region);
+            } else {
+                alert('省市区初始化失败');
+            }
+        },'json');
+
+        $('.area-select').on('change',function () {
+            var id = $(this).val();
+            var next = $(this).data('next');
+            $.get("{:url('/api/home/area/getNextLevel')}",{id:id},function (data) {
+                if (data.code==1) {
+                  var option = '';
+                  for(var i=0;i<data.data.area.length;i++){
+                      option += '<option value="'+data.data.area[i].id+'">' +data.data.area[i].areaName+'</option>';
+                  }
+                  $('#'+next).html(option);
+                  if (data.data.child!=undefined) {
+                      var option = '';
+                      for(var i=0;i<data.data.child.length;i++){
+                          option += '<option value="'+data.data.child[i].id+'">' +data.data.child[i].areaName+'</option>';
+                      }
+                      if(option == ''){
+                          option = '<option value="0">无</option>';
+                      }
+                      next = $('#'+next).data('next');
+                      $('#'+next).html(option);
+                  }
+                } else {
+                    option = '<option value="0">无</option>';
+                    $('#'+next).html(option);
+                    next = $('#'+next).data('next');
+                    $('#'+next).html(option);
+                }
+            })
+        });
+
+        $('.btn-cancel-thumbnail').on('click',function () {
+            $(this).prev().find('img').attr('src', '__TMPL__/public/assets/images/default-thumbnail.png');
+            $(this).parent().find('input:first').val('');
+        });
+
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<style>
+    div.pagination {
+        display: inline-block;
+        padding: 0;
+        margin: 0;
+    }
+
+    div.pagination li {display: inline;}
+
+    div.pagination li a {
+        color: black;
+        float: left;
+        padding: 8px 16px;
+        text-decoration: none;
+        transition: background-color .3s;
+        border: 1px solid #ddd;
+    }
+
+    div.pagination li span {
+        color: black;
+        float: left;
+        padding: 8px 16px;
+        text-decoration: none;
+        transition: background-color .3s;
+        border: 1px solid #ddd;
+    }
+
+    div.pagination li.active span {
+        background-color: #4CAF50;
+        color: white;
+        border: 1px solid #4CAF50;
+    }
+
+    div.pagination li a:hover:not(.active) {background-color: #ddd;}
+
+    div.center {text-align: center;}
+</style>
+<div class="center">
+    <div class="pagination">{$page}</div>
+</div>

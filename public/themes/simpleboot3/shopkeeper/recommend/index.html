@@ -1,0 +1,78 @@
+<script type="text/javascript" src="__TMPL__/public/assets/js/jquery-1.10.2.min.js"></script>
+<script language="javascript" type="text/javascript" src="__TMPL__/public/assets/home/My97DatePicker/WdatePicker.js"></script>
+<style>
+    body{padding: 0;margin: 0;}
+    .d_search{width: 100%;min-height: 70px;line-height: 70px; background: #ffffff;}
+
+    .list{margin-top: 20px; width: 100%;min-height:500px;background: #ffffff;padding: 20px 20px 40px 20px;box-sizing: border-box;position: relative;}
+    .p2{line-height: 40px;font-size: 20px;font-weight: bold;margin: 0;}
+    .t_first{width: 100%;text-align: center;border-collapse: collapse;}
+    .t_first tr{height: 40px;font-size: 12px;line-height: 40px;color: #a0a0a0;}
+    .t_first tr:nth-child(2n) {background: #f6f6f6;}
+    .t_first tr td{height: 40px; border-bottom: solid 1px #a0a0a0;}
+    .t_first th{color: #6e6e6e;font-weight: normal;border-bottom: solid 1px #a0a0a0;line-height: 40px;
+        font-size: 13px;}
+    .td{color: red;}
+    .fenye{width: 100%; height: 60px;line-height:60px;position: absolute;bottom: 20px;text-align: center;}
+
+    select{width: 150px;height: 30px;border: solid 1px #9f9f9f;border-radius: 5px;}
+    input{width: 150px;height: 30px;border: solid 1px #9f9f9f;border-radius: 5px}
+
+
+    .btn_search{width: 70px;height: 30px;border: none; border-radius: 5px;background: #2b2de0;color: #ffffff;}
+    .btn_add{display: inline-block; width: 100px;height: 30px;line-height: 30px;text-align: center;text-decoration: none; border: none; border-radius: 5px;background: #fe0000;color: #ffffff;}
+
+    label{margin-left: 15px;color: #6e6e6e;}
+    .daohang{width: 100%;height: 30px;line-height: 30px;padding-left: 15px;padding-top: 10px;}
+</style>
+<div class="d_search">
+    <div class="daohang"><span>推荐管理</span> > <span>推荐商户列表</span></div>
+    <form method="get" action="{:url('recommend/index')}">
+        <label>添加时间：</label>
+        <input class="Wdate" type="text" id="start_time" style="height: 30px;" onclick="selecttime(1)" name="start_time" value="{$start_time|default=''}"> -
+        <input class="Wdate" type="text" id="end_time" style="height: 30px;" onclick="selecttime(2)" name="end_time" value="{$end_time|default=''}">
+        <label>商户手机号：</label>
+        <input type="text" value="{$mobile|default=''}" name="mobile">
+        <button class="btn_search" type="submit" onclick="">搜索</button>
+        <button type="button" class="btn_search" style="background: red" onclick="window.location.href='{:url(\'recommend/index\')}'">清空</button>
+    </form>
+</div>
+<div class="list">
+    <table class="t_first">
+        <tr>
+            <th>ID</th>
+            <th>账号</th>
+            <th>商户手机号</th>
+            <th>商户姓名</th>
+            <th>商户QQ号</th>
+            <th>添加时间</th>
+        </tr>
+        <foreach name="items" item="vo" index="groupIndex">
+            <tr>
+                <td>{$groupIndex}</td>
+                <td>{$vo.user_login}</td>
+                <td>{$vo.mobile}</td>
+                <td>{$vo.user_nickname}</td>
+                <td>{$vo.qq}</td>
+                <td>{:date('Y-m-d',$vo.create_time)}</td>
+            </tr>
+        </foreach>
+    </table>
+    <div style="width: 100%;height: 60px;"></div>
+    <include file="public@page" />
+</div>
+<script>
+    function selecttime(flag){
+        if(flag==1){
+            var endTime = $("#end_time").val();
+            if(endTime != ""){
+                WdatePicker({dateFmt:'yyyy-MM-dd HH:00:00',maxDate:endTime})}else{
+                WdatePicker({dateFmt:'yyyy-MM-dd HH:00:00'})}
+        }else{
+            var startTime = $("#start_time").val();
+            if(startTime != ""){
+                WdatePicker({dateFmt:'yyyy-MM-dd HH:00:00',minDate:startTime})}else{
+                WdatePicker({dateFmt:'yyyy-MM-dd HH:00:00'})}
+        }
+    }
+</script>

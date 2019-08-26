@@ -1,0 +1,179 @@
+<!--个人中心-->
+<script type="text/javascript" src="__TMPL__/public/assets/js/jquery-1.10.2.min.js"></script>
+<link rel="stylesheet" type="text/css" href="__TMPL__/public/assets/webuploader1/webuploader.css">
+<script type="text/javascript" src="__TMPL__/public/assets/webuploader1/webuploader.js"></script>
+<style>
+    #nav{height:35px;width: 100%; border-bottom: solid 1px #e3e3e3;}
+    #nav a{display:block;width: 100px; height:35px;line-height:35px;font-size:15px;text-align:center;float:left;
+        background-color:#ffffff;cursor:pointer; color: #555555;box-sizing: border-box;font-weight: bold;border:solid 1px #e3e3e3;
+        margin-right: 25px;border-top-left-radius: 7px;border-top-right-radius: 7px;border-bottom: none;}
+    #nav a.on{background: #4A92FF;color: #ffffff;border:solid 1px #4A92FF;}
+    #contentBox{width:100%;border-bottom-left-radius: 10px;border-bottom-right-radius: 10px;}
+    #contentBox .box{display:none;box-sizing: border-box;padding: 20px;}
+    #contentBox .box.active{display:block;box-sizing: border-box;}
+    .d_form{width: 550px;height: auto; margin: 0 auto;color: #555555;}
+    .d_child{margin-bottom: 15px !important;}
+    .d_child select{width: 380px;height: 30px;border: solid 1px #e3e3e3;border-radius: 5px;}
+    .d_child label{display: inline-block;width: 100px;text-align: right;}
+    .d_child input{width: 380px;height: 30px;border: solid 1px #e3e3e3;border-radius: 5px;padding-left: 10px;box-sizing: border-box;}
+    .d_child .d_radio{width: 15px;height:15px;margin-top: -2px;}
+    .d_child textarea{resize: none;width: 380px;height: 130px;border: solid 1px #e3e3e3;border-radius: 5px;vertical-align: top;padding-left: 10px;box-sizing: border-box;}
+    .btn{width: 150px;height: 40px;line-height: 40px;color: #ffffff;background: #4a92ff;border-radius: 20px;border: none;margin: 20px auto 0 auto;
+        text-align: center;}
+    .change{width: 120px;/*height: 30px;line-height: 30px;*/color: #aaaaaa;background: #f0f0f0;border-radius: 20px;border: none;margin: 15px auto 20px auto;
+        text-align: center;}
+    .c_img{width: 100px;height: 100px;margin-left: 175px;}
+    .ipt{width: 450px;height: auto; margin: 0 auto;color: #555555;}
+    .ipt input{width: 250px;}
+</style>
+<div class="d_tab mt10">
+    <div class="line"></div>
+    <div class="tab_btm p30">
+        <nav id="nav">
+            <a class="on">个人信息</a>
+            <a href="{:url('profile/pass')}">密码修改</a>
+            <a href="{:url('profile/transfer')}">转账管理</a>
+            <a href="{:url('profile/recharge')}">充值</a>
+        </nav>
+        <div id="contentBox">
+            <div class="box active">
+                <form id="profileForm" action="{:url('profile/info')}" method="post">
+                    <div class="d_form f14">
+                        <div class="d_child ipt">
+                            <div id="fileList" class="uploader-list" style="text-align: center;">
+<!--                                <img src="{:cmf_get_image_preview_url($user.avatar)}" width="150" height="150">-->
+                                <empty name="$user.avatar">
+                                    <img src="__TMPL__/public/assets/home/images/toux.jpg" width="150" height="150">
+                                <else/>
+                                    <img src="{:cmf_get_image_url($user.avatar)}" width="150" height="150">
+                                </empty>
+                                <input type="hidden" name="avatar" id="avatar" value="{$user.avatar}">
+                            </div>
+                            <div class="change f14" id="filePicker">更换头像</div>
+                        </div>
+                        <div class="d_child ipt">
+                            <label>昵称：</label>
+                            <input type="text" id="input-user_nickname" name="user_nickname" value="{$user.user_nickname}">
+                        </div>
+                        <div class="d_child ipt">
+                            <label>性别：</label>
+                            <input type="radio" name="sex" class="d_radio" value="0" <if condition="$user.sex == '0'">checked</if>>男
+                            <input type="radio" name="sex" class="d_radio" value="1" <if condition="$user.sex == '1'">checked</if>>女
+                        </div>
+                        <div class="d_child  ipt">
+                            <label>生日：</label>
+                            <input type="date" name="birthday" value="{:date('Y-m-d', $user.birthday)}">
+                        </div>
+                        <!--
+                        <div class="btn">保存</div>-->
+                        <button class="btn" type="submit">保存</button>
+                    </div>
+                </form>
+
+                <!--<ul id="c_ul">-->
+                <!--<li><img src="images/logo.png"></li>-->
+                <!--<li><img src="images/logo2.png"></li>-->
+                <!--</ul>-->
+
+            </div>
+
+
+
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="__STATIC__/js/admin.js"></script>
+<script>
+    window.onload= function(){
+        $("#nav a").off("click").on("click",function(){
+            var index = $(this).index();
+            $(this).addClass("on").siblings().removeClass("on");
+            $("#contentBox .box").eq(index).addClass("active").siblings().removeClass("active");
+        });
+    };
+
+    $('#profileForm').on('submit',function () {
+        var nickname = $('#input-user_nickname').val();
+        $.ajax({
+            type: 'POST',
+            url: $('#profileForm').attr('action'),
+            data:$('#profileForm').serialize(),
+            dataType:'json',
+            success:function (data) {
+                alert(data.msg);
+                if(data.code==1){
+                    $('#nickname',parent.document).text(nickname);
+                    window.location=data.url;
+                }
+            }
+        });
+        return false;
+    })
+
+    var list = $('#fileList');
+    var params = '&multi=1&filetype=image&app=app';
+    var uploader = WebUploader.create({
+        // 选完文件后，是否自动上传。
+        auto: true,
+        duplicate: true,
+        // swf文件路径
+        swf: '__TMPL__/public/assets/webuploader1/Uploader.swf',
+        // 文件接收服务端。
+        server: '{:url("user/Asset/webuploader")}?_ajax=1'+params,
+        // 选择文件的按钮。可选。
+        // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+        pick: '#filePicker',
+
+        multiple:false,
+        fileNumLimit:1,
+        // 只允许选择图片文件。
+        accept: {
+            title: 'Images',
+            extensions: 'gif,jpg,jpeg,bmp,png',
+            mimeTypes: 'image/*'
+        }
+    });
+
+    uploader.on( 'fileQueued', function( file ) {
+        var $li = $(
+            '<div id="' + file.id + '" class="file-item thumbnail remove-this">' +
+            '<img>' +
+            '<input type="hidden" name="avatar" id="avatar">' +
+            '</div>'
+            ),
+            $img = $li.find('img');
+
+        // $list为容器jQuery实例
+        list.html( $li );
+
+        $li.on('click', '.remove-this', function() {
+            uploader.removeFile( file, true);
+        })
+
+        // 创建缩略图
+        // 如果为非图片文件，可以不用调用此方法。
+        // thumbnailWidth x thumbnailHeight 为 100 x 100
+        uploader.makeThumb( file, function( error, src ) {
+            if ( error ) {
+                $img.replaceWith('<span>不能预览</span>');
+                return;
+            }
+
+            $img.attr( 'src', src );
+        }, 150, 150 );
+    });
+
+    uploader.on( 'uploadSuccess', function( file , response) {
+        $('#avatar').val(response.data['filepath']);
+        uploader.removeFile(file);
+        $( '#'+file.id ).find('p.state').text('已上传');
+    });
+
+    uploader.on( 'uploadError', function( file ) {
+        $( '#'+file.id ).find('p.state').text('上传出错');
+    });
+
+    uploader.on( 'uploadComplete', function( file) {
+        $( '#'+file.id ).find('.progress').fadeOut();
+    });
+</script>

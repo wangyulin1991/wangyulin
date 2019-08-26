@@ -1,0 +1,62 @@
+<include file="public@header"/>
+</head>
+<body>
+<div class="wrap js-check-wrap">
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-bordered">
+                <tr>
+                    <th width="150px">打款编号</th>
+                    <td>
+                        {$data.order_no}
+                    </td>
+                </tr>
+                <tr>
+                    <th>姓名</th>
+                    <td>
+                        {$data.real_name}
+                    </td>
+                </tr>
+                <tr>
+                    <th>手机号码</th>
+                    <td>
+                        {$data.cellphone}
+                    </td>
+                </tr>
+                <tr>
+                    <th>银行卡号</th>
+                    <td>
+                        {$data.bank_number}
+                    </td>
+                </tr>
+                <tr>
+                    <th>打款金额</th>
+                    <td>
+                        {$data.money}
+                    </td>
+                </tr>
+                <tr>
+                    <th>清算时间</th>
+                    <td>
+                        {$data.settle_date}
+                    </td>
+                </tr>
+                <tr>
+                    <th>查询结果</th>
+                    <td>
+                        {$data.result}
+                    </td>
+                </tr>
+                <tr>
+                    <th>异常备注</th>
+                    <td>
+                        {$data.memo}
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="__STATIC__/js/admin.js"></script>
+</body>
+</html>

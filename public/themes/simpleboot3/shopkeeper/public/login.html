@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <include file="shopkeeper@public/head" />
+  <script>
+      $(function(){
+          var height=$(window).height();
+          $('.login_wrap').css('height',height);
+      });
+  </script>
+</head>
+<body>
+<div class="login_wrap">
+  <div class="l_center">
+    <p class="p_welcome">肥补单商户后台</p>
+    <form class="js-ajax-form" action="{:url('shopkeeper/public/doLogin')}" method="post">
+      <div class="main">
+        <img src="/static/shopkeeper/images/user2.png" style="margin-top: 85px;">
+        <input type="text" name="username" placeholder="用户名" autocomplete="off">
+        <input type="password" name="password" placeholder="输入密码" autocomplete="off">
+        <div class="d_code">
+          <input name="captcha" placeholder="输入验证码" class="input_code">
+          <div class="code_img"><captcha height="38" width="160" font-size="20"/></div>
+        </div>
+        <button class="login_btn mt20">登&nbsp;&nbsp;&nbsp;&nbsp;录</button>
+        <p class="forget_psd mt20" onclick="window.location.href='{:url('shopkeeper/public/findPassword')}'">*&nbsp;&nbsp;忘记密码</p>
+      </div>
+    </form>
+  </div>
+</div>
+<include file="shopkeeper@public/scripts" />
+</body>
+</html>

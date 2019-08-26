@@ -1,0 +1,28 @@
+<include file="public@header" />
+</head>
+<body>
+	<div class="wrap">
+		<ul class="nav nav-tabs">
+			<li><a href="{:url('user/index')}">任务列表</a></li>
+			<li class="active"><a>充值</a></li>
+		</ul>
+		<div class="form-group">
+			<div class="col-sm-offset-2 col-sm-10">
+				<button type="button" class="btn btn-primary js-ajax-submit" onclick="recharge()">充值</button>
+			</div>
+		</div>
+	</div>
+	<script src="__STATIC__/js/admin.js"></script>
+</body>
+<script>
+        function recharge() {
+            $.ajax({
+                type: "POST",
+                url: "{:url('common/pay/recharge')}",
+                success: function (data) {
+                    window.location.href=data;
+                }
+            });
+        }
+</script>
+</html>

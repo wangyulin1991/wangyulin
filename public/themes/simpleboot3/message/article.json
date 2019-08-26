@@ -1,0 +1,17 @@
+{
+    "name": "消息页",
+    "action": "message/Article/index",
+    "description": "消息页模板文件",
+    "order": 10.0,
+    "more": {
+        "vars": {
+            "hot_articles_category_id": {
+                "title": "Hot Articles分类ID",
+                "value": "1",
+                "type": "text",
+                "tip": "",
+                "rule": []
+            }
+        }
+    }
+}

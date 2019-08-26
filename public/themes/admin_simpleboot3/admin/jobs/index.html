@@ -1,0 +1,52 @@
+<include file="public@header" />
+</head>
+<body>
+<div class="wrap js-check-wrap">
+  <ul class="nav nav-tabs">
+    <li class="active"><a href="{:url('Jobs/index')}">职业列表</a></li>
+    <li><a href="{:url('Jobs/add')}">添加职业</a></li>
+  </ul>
+  <table class="table table-hover table-bordered table-list" id="menus-table">
+    <thead>
+    <tr>
+      <th width="50">ID</th>
+      <th>职业名称</th>
+      <th>状态</th>
+      <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    <volist name="jobs" id="job">
+      <tr>
+        <td>{$job.id}</td>
+        <td>{$job.job_name}</td>
+        <td>{$job.status?'开启':'关闭'}</td>
+        <td>
+          <a class="btn btn-xs btn-primary" href="{:url('Jobs/edit', ['id' => $job['id']])}">{:lang('EDIT')}</a>
+        </td>
+      </tr>
+    </volist>
+    </tbody>
+    <tfoot>
+    <tr>
+      <th width="50">ID</th>
+      <th>职业名称</th>
+      <th>状态</th>
+      <th>操作</th>
+    </tr>
+    </tfoot>
+  </table>
+</div>
+<script src="__STATIC__/js/admin.js"></script>
+<script>
+    $(document).ready(function() {
+        Wind.css('treeTable');
+        Wind.use('treeTable', function() {
+            $("#menus-table").treeTable({
+                indent : 20
+            });
+        });
+    });
+</script>
+</body>
+</html>

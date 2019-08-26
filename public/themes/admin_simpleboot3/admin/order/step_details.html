@@ -1,0 +1,93 @@
+<include file="public@header" />
+<style>
+    #keywordDv{display: inline-block;}
+    #keyword{width: 150px!important;display: inline-block;}
+</style>
+</head>
+<body>
+	<div class="wrap">
+		<ul class="nav nav-tabs">
+			<li><a href="{:url('order/appeal')}">申诉列表</a></li>
+			<li class="active"><a>步骤详情</a></li>
+		</ul>
+		<form method="post" class="form-horizontal js-ajax-form margin-top-20" action="{:url('order/edit_details')}">
+            <div class="form-group">
+                <label class="col-sm-2 control-label"></label>
+                <div class="col-md-6 col-sm-10">
+                    <table class="table table-hover table-bordered table-list">
+                        <tr>
+                            <td>步骤名称</td>
+                            <td>步骤描述</td>
+                            <td width="200">详情</td>
+                            <td width="160px;">时间</td>
+                            <td>id</td>
+                        </tr>
+                        <foreach name="steps" item="vo">
+                        <tr>
+                            <td>{$vo.step_name}</td>
+                            <td>{$vo.step_instruction}</td>
+                            <td>
+                                <input type="hidden" name="img{$vo.id}[id]" value="{$vo.id}">
+                                <foreach name="vo.input_text" item="v">
+                                    <input type="hidden" name1="img{$vo.id}[param_name]" value="{$v.param_name}">
+                                    {$v.input_type_name} :
+                                    <if condition="$v.input_type eq 'image'">
+                                        <empty name="$v.value">
+                                            未上传
+                                            <else/>
+                                            <input type="hidden" name="img{$vo.id}[{$v.param_name}]" id="{$v.param_name}" value="{$v.value}">
+                                            <a href="javascript:uploadOneImage('图片上传','#{$v.param_name}');">
+                                                <img class="pimg" width="100" src="{:cmf_get_image_preview_url($v.value)}"
+                                                     id="{$v.param_name}-preview" style="cursor: pointer"/>
+                                            </a>
+                                            <input type="button" class="btn btn-sm btn-cancel-thumbnail" value="取消图片">
+                                            <input type="button" class="btn btn-sm btn-big" value="查看大图">
+                                        </empty>
+<!--                                        <img class="pimg" width="50" src="{:cmf_get_image_preview_url($v.value)}" onclick="javascript:window.open('{:cmf_get_image_preview_url($v.value)}')" >-->
+                                        <else if condition="$v.input_type eq 'input'"/>
+                                        <input type="text" name="img{$vo.id}[{$v.param_name}]" value="{$v.value}">
+                                    </if>
+                                    <br>
+                                </foreach>
+                            </td>
+                            <td>
+                                {:date('Y-m-d H:i:s',$vo.completed_time)}
+                            </td>
+                            <td>{$vo.id}</td>
+                        </tr>
+                        </foreach>
+                    </table>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type="submit" class="btn btn-primary js-ajax-submit">保存</button>
+                </div>
+            </div>
+		</form>
+    </div>
+	<script src="__STATIC__/js/admin.js"></script>
+<script>
+    $(document).ready(function() {
+        $('.btn-cancel-thumbnail').on('click',function () {
+            $(this).prev().find('img').attr('src', '__TMPL__/public/assets/images/default-thumbnail.png');
+            $(this).prev().prev().val('');
+        });
+
+        $('.btn-big').on('click',function () {
+            var imgSrc = $(this).prevAll().children('img').attr("src");
+            console.log(imgSrc);
+            window.open(imgSrc);
+            // openIframeLayer(imgSrc, '查看大图', {
+            //     area: ['800px', '600px'],
+            //     btn: ['关闭大图'],
+            //     btnAlign:'c',
+            //     yes: function (index, layero) {
+            //         layer.close(index);
+            //     },
+            // });
+        });
+    });
+</script>
+</body>
+</html>

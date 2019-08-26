@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title></title>
+    <!--<script type="text/javascript" src="__TMPL__/public/assets/js/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="__TMPL__/public/assets/home/step/js/setStep.js"></script>
+    <link rel="stylesheet" href="__TMPL__/public/assets/home/step/css/ystep.css">-->
+    <script type="text/javascript" src="__TMPL__/public/assets/js/jquery-1.10.2.min.js"></script>
+    <style>
+        body{margin: 0;padding: 0;}
+        .d_form{width: 100%;background: #ffffff;padding-bottom: 100px;padding-top: 20px;}
+        .d_form label{width: 200px;text-align: right;display: inline-block; }
+        .d_in{height: 50px;line-height: 50px;}
+        select{width: 300px;height: 30px;border: solid 1px #9f9f9f;border-radius: 5px;}
+        input{width: 300px;height: 30px;border: solid 1px #9f9f9f;border-radius: 5px;padding-left: 10px;box-sizing: border-box;}
+        .input1{width: 15px;height: 15px;}
+        textarea {
+            width: 300px;
+            height: 100px;
+            resize: none;
+            vertical-align: top;
+            border: solid 1px #9f9f9f;
+            border-radius: 5px;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        .save {
+            width: 130px;
+            height: 35px;
+            line-height: 35px;
+            text-align: center;
+            border: none;
+            border-radius: 5px;
+            background: #fe0000;
+            color: #ffffff;
+            margin-left: 285px;
+            font-size: 14px;
+        }
+        .daohang{width: 100%;height: 30px;line-height: 30px;padding-left: 15px;padding-top: 10px;font-size: 16px}
+    </style>
+</head>
+<body>
+<div class="d_form">
+    <div class="daohang"><span>订单管理</span> > <span>订单进度</span></div>
+    <form action="{:url('grab_task/view_step')}" method="post">
+        <!--<div class="stepCont stepCont1">
+            <div class='ystep-container ystep-lg ystep-blue'></div>
+            <div class="pageCont">
+                <div id="page1" class="stepPage">
+                    <h1>page1</h1>
+                </div>
+                <div id="page2" class="stepPage">
+                    <h1>page2</h1>
+                </div>
+                <div id="page3" class="stepPage">
+                    <h1>page3</h1>
+                </div>
+                <div id="page4" class="stepPage">
+                    <h1>page4</h1>
+                </div>
+                <div id="page5" class="stepPage">
+                    <h1>page5</h1>
+                </div>
+            </div>
+        </div>-->
+        <div class="d_form">
+            <label>步骤列表：</label>
+            <div style="padding-left: 200px;">
+                <table style="border-collapse: collapse;text-align: center" border="1px">
+                    <tr>
+                        <td width="80px">步骤顺序</td>
+                        <td width="150px">步骤名称</td>
+                        <td width="500px">步骤描述</td>
+                        <td width="100px">完成情况</td>
+                        <td width="60px">详情</td>
+                    </tr>
+                    <foreach name="steps" item="vo">
+                        <tr>
+                            <td>
+                                {$vo.step_sort}
+                            </td>
+                            <td>
+                                {$vo.step_name}
+                            </td>
+                            <td>
+                                {$vo.step_instruction}
+                            </td>
+                            <td>
+                                <if condition="$vo.now_step_sort gt $vo.step_sort">已做</if>
+                                <if condition="$vo.now_step_sort eq $vo.step_sort && $vo.status != 1">当前步骤<elseif condition="$vo.now_step_sort eq $vo.step_sort && $vo.status == 1"/>已做</if>
+                                <if condition="$vo.now_step_sort lt $vo.step_sort">未做</if>
+                            </td>
+                            <td>
+                                <foreach name="vo.input_text" item="v">
+                                    {$v.input_type_name} :
+                                    <if condition="$v.input_type eq 'image'">
+                                        <img class="pimg" width="50" src="{:cmf_get_image_preview_url($v.value)}" onclick="javascript:window.open('{:cmf_get_image_preview_url($v.value)}')" >
+                                        <else if condition="$v.input_type eq 'input'"/>
+                                        <input type="text" value="{$v.value}" readonly>
+                                    </if>
+                                    <br>
+                                </foreach>
+                            </td>
+                            <!--<td><button type="button" class="btn btn-primary js-ajax-submit" onclick="showDetail();">详情</button></td>-->
+                        </tr>
+                    </foreach>
+                </table>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div id="detailDv" style="width: 700px;height: 500px;position: fixed;top: 20px;left: 200px; z-index: 9999;display: none;background: gray;">
+
+</div>
+<script>
+    function showDetail() {
+        //$('#detailDv').show();
+        alert()
+    }
+</script>
+</body>
+</html>

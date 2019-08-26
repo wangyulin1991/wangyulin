@@ -1,0 +1,143 @@
+<include file="public@header"/>
+<style type="text/css">
+    .pic-list li {
+        margin-bottom: 5px;
+    }
+</style>
+<script type="text/html" id="photos-item-tpl">
+    <li id="saved-image{id}">
+        <input id="photo-{id}" type="hidden" name="photo_urls[]" value="{filepath}">
+        <input class="form-control" id="photo-{id}-name" type="text" name="photo_names[]" value="{name}"
+               style="width: 200px;" title="图片名称">
+        <img id="photo-{id}-preview" src="{url}" style="height:36px;width: 36px;"
+             onclick="imagePreviewDialog(this.src);">
+        <a href="javascript:uploadOneImage('图片上传','#photo-{id}');">替换</a>
+        <a href="javascript:(function(){$('#saved-image{id}').remove();})();">移除</a>
+    </li>
+</script>
+<script type="text/html" id="files-item-tpl">
+    <li id="saved-file{id}">
+        <input id="file-{id}" type="hidden" name="file_urls[]" value="{filepath}">
+        <input class="form-control" id="file-{id}-name" type="text" name="file_names[]" value="{name}"
+               style="width: 200px;" title="文件名称">
+        <a id="file-{id}-preview" href="{preview_url}" target="_blank">下载</a>
+        <a href="javascript:uploadOne('文件上传','#file-{id}','file');">替换</a>
+        <a href="javascript:(function(){$('#saved-file{id}').remove();})();">移除</a>
+    </li>
+</script>
+</head>
+<body>
+<div class="wrap js-check-wrap">
+
+    <form action="{:url('BrushGuest/queryResult')}" method="post" class="form-horizontal js-ajax-form margin-top-20">
+        <input type="hidden" name="id" id="brush_guest_id" value="{$data.id}">
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-bordered">
+
+                    <tr>
+                        <th>真实姓名</th>
+                        <td>
+                            <input class="form-control" disabled type="text" name="real_name"
+                                   id="real_name" required value="{$data.real_name}" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>手机号码</th>
+                        <td>
+                            <input class="form-control" disabled type="text" name="cellphone" id="cellphone" value="{$data.cellphone}">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>旺旺号</th>
+                        <td>
+                            <input class="form-control" disabled type="text" name="cellphone" id="taobao_ww" value="{$data.taobao_ww}">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>淘齡</th>
+                        <td>
+                            <input class="form-control" type="text" name="taobao_age" id="taobao_age" value="{$data.taobao_age}">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>查号结果<span class="form-required">*</span></th>
+                        <td class="form-inline">
+                            <input class="form-control" type="radio" name="is_black"
+                                   required value="1" <eq name="data.is_black" value="1">checked</eq>/> 白号
+                            <input class="form-control" type="radio" name="is_black"
+                                   required value="2" <eq name="data.is_black" value="2">checked</eq>/> 黑号
+                            <input class="form-control" type="radio" name="is_black"
+                                   required value="3" <eq name="data.is_black" value="3">checked</eq>/> 白号（优）
+                            <input class="form-control" type="radio" name="is_black"
+                                   required value="4" <eq name="data.is_black" value="4">checked</eq>/> 白号（劣）
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>查号截图<span class="form-required">*</span></th>
+                        <td class="form-inline">
+                            <input type="hidden" name="query_img" id="query_img" value="{$data.query_img}">
+                            <if condition="empty($data.query_img)">
+                                <a href="javascript:uploadOneImage('图片上传','#query_img');">
+                                    <img src="__TMPL__/public/assets/images/default-thumbnail.png" id="query_img-preview"
+                                         width="135" style="cursor: pointer"/>
+                                </a>
+                            <else />
+                                <a href="javascript:uploadOneImage('图片上传','#query_img');">
+                                    <img src="{:cmf_get_image_preview_url($data.query_img)}"
+                                         id="query_img-preview"
+                                         width="135" style="cursor: pointer"/>
+                                </a>
+                            </if>
+
+                            <input type="button" class="btn btn-sm btn-cancel-thumbnail" value="取消图片">
+                            <input type="button" class="btn btn-sm btn-big" value="查看大图">
+                        </td>
+                    </tr>
+
+                </table>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script type="text/javascript" src="__STATIC__/js/admin.js"></script>
+<script type="text/javascript">
+    //编辑器路径定义
+    var editorURL = GV.WEB_ROOT;
+</script>
+<script type="text/javascript">
+    $(function () {
+
+        $('.btn-cancel-thumbnail').on('click',function () {
+            $(this).prev().find('img').attr('src', '__TMPL__/public/assets/images/default-thumbnail.png');
+            $(this).parent().find('input:first').val('');
+        });
+
+    });
+
+    function getAuditData() {
+        var data = new Array();
+        data.query_img = $('#query_img').val();
+        data.id = $('#brush_guest_id').val();
+        data.age = $('#taobao_age').val();
+        data.is_black = $("input[name='is_black']:checked").val();
+        return data;
+    }
+    $(document).ready(function() {
+        $('.btn-big').on('click',function () {
+            var imgSrc = $(this).prevAll().children('img').attr("src");
+            console.log(imgSrc);
+            openIframeLayer(imgSrc, '查看大图', {
+                area: ['800px', '600px'],
+                btn: ['关闭大图'],
+                btnAlign:'c',
+                yes: function (index, layero) {
+                    layer.close(index);
+                },
+            });
+        });
+    });
+</script>
+</body>
+</html>

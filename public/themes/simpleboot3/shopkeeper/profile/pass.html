@@ -1,0 +1,255 @@
+<include file="public@head"/>
+<style>
+    body, ul, ol, li, p, h1, h2, h3, h4, h5, h6, form, fieldset, table, td, img, div {
+        margin: 0;
+        padding: 0;
+        border: 0;
+        background: #ffffff;
+    }
+
+    body {
+        font-size: 12px;
+        font-family: "Microsoft YaHei"
+    }
+
+    #nav{height:36px;width: 100%; border-bottom: solid 1px #e3e3e3;}
+
+    #nav a{display:block;width: 100px; height:35px;line-height:35px;font-size:15px;text-align:center;float:left;
+        background-color:#ffffff;cursor:pointer; color: #555555;box-sizing: border-box;font-weight: bold;border:solid 1px #e3e3e3;
+        margin-right: 25px;border-top-left-radius: 7px;border-top-right-radius: 7px;border-bottom: none;}
+    #nav a.on{background: #4A92FF;color: #ffffff;border:solid 1px #4A92FF;}
+
+    #contentBox {
+        width: 100%;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+    }
+
+    #contentBox .box {
+        display: none;
+        box-sizing: border-box;
+        padding: 0.1rem;
+    }
+
+    #contentBox .box.active {
+        display: block;
+        box-sizing: border-box;
+    }
+
+    #contentBox .box ul li img {
+        width: 100%;
+        height: 4rem;
+    }
+
+    #contentBox .box ul li p {
+        margin-top: -0.65rem
+    }
+
+    #contentBox .box ul li {
+        width: 100%;
+        color: #fe7e2f;
+        font-size: 0.3rem;
+        line-height: 0.8rem;
+        margin-bottom: 0.3rem;
+        font-weight: bold;
+    }
+
+    #contentBox .box ul li:last-child {
+        margin-bottom: 0;
+    }
+
+    .table {
+        width: 100%;
+    }
+
+    .table th {
+        border: solid 1px #d4d4d4;
+    }
+
+    .table tr {
+        height: 0.5rem;
+        line-height: 0.5rem;
+    }
+
+    body {
+        margin: 0;
+        padding: 0;
+    }
+
+    .d_form {
+        width: 100%;
+        min-height: 70px;
+        background: #ffffff;
+        padding: 30px 0 50px 0;
+    }
+
+    .d_form label {
+        width: 200px;
+        text-align: right;
+        display: inline-block;
+    }
+
+    .d_in {
+        height: 50px;
+        line-height: 50px;
+    }
+
+    select {
+        width: 300px;
+        height: 30px;
+        border: solid 1px #9f9f9f;
+        border-radius: 5px;
+    }
+
+    input {
+        width: 300px;
+        height: 30px;
+        border: solid 1px #9f9f9f;
+        border-radius: 5px;
+        padding-left: 10px;
+        box-sizing: border-box;
+    }
+
+    .input1 {
+        width: 15px;
+        height: 15px;
+    }
+
+    .btn_add {
+        display: inline-block;
+        width: 100px;
+        height: 30px;
+        line-height: 30px;
+        text-align: center;
+        text-decoration: none;
+        border: none;
+        border-radius: 5px;
+        background: #fe0000;
+        color: #FFFFFF;
+    }
+
+    label {
+        font-weight: normal;
+        font-size: 18px;
+    }
+
+    .save {
+        width: 130px;
+        height: 35px;
+        line-height: 35px;
+        text-align: center;
+        border: none;
+        border-radius: 5px;
+        background: #fe0000;
+        color: #ffffff;
+        margin-left: 285px;
+        font-size: 14px;
+    }
+
+    a {
+        text-decoration: none;
+    }
+
+    .getCode {
+        width: 120px;
+        display: inline-block;
+        height: 31px;
+        line-height: 31px;
+        text-align: center;
+        color: #ffffff;
+        font-size: 14px;
+        border-radius: 5px;
+        margin-left: 25px;
+        background: red;
+        margin-bottom: -10px;
+    }
+</style>
+
+<div class="tab">
+    <nav id="nav">
+        <a href="{:url('profile/index')}">个人信息</a>
+        <a class="on">密码修改</a>
+        <a href="{:url('profile/transfer')}">转账管理</a>
+        <a href="{:url('profile/recharge')}">充值</a>
+    </nav>
+    <div id="contentBox">
+        <div class="box active">
+            <div class="d_form">
+                <form id="form" action="{:url('profile/pass')}" method="post">
+                    <div class="d_in">
+                        <label>旧密码：</label>
+                        <input type="text" id="input-old_password" name="old_password">
+                    </div>
+                    <div class="d_in">
+                        <label>新密码：</label>
+                        <input type="password" id="input-password" name="password">
+                    </div>
+                    <div class="d_in">
+                        <label>确认新密码：</label>
+                        <input type="password" id="input-confirm_password" name="confirm_password">
+                    </div>
+                    <div class="d_in">
+                        <label>验证码：</label>
+                        <input type="text" id="input-code" name="code" style="width: 150px;display: inline-block;">
+                        <div class="getCode" id="getCode" onclick="getCode()">获取验证码</div>
+                        <div>
+                        </div>
+                        <button class="save" type="button" onclick="submitForm()">保存</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function getCode() {
+        $.ajax({
+            url:'{:url("profile/send_sms_code")}',
+            type : "GET",
+            success : function(data, textStatus) {
+                if(data.code == 1) {
+                    setTime();//开始倒计时
+                }
+            }
+        });
+        setTime();
+    }
+
+
+    var countdown = 60;
+    function setTime() {
+        var obj = $('#getCode');
+        if (countdown == 0) {
+            obj.css('pointer-events', '');
+            obj.css('background', '#10B8E8');
+            obj.html("获取验证码");
+            countdown = 60;//60秒过后button上的文字初始化,计时器初始化;
+            return;
+        } else {
+            obj.css('background', '#B8B8B8');
+            obj.css('pointer-events', 'none');
+            obj.html("("+countdown+"s)后重新发送") ;
+            countdown--;
+        }
+        setTimeout(function() { setTime(obj) },1000) //每1000毫秒执行一次
+    }
+
+    function submitForm() {
+        $.ajax({
+            url: "{:url('profile/pass')}",
+            data: $('#form').serialize(),
+            type: 'POST',
+            dateType: 'json',
+            success: function (data) {
+                if (data != null) {
+                    if (data.code == 0) {
+                        alert(data.msg);
+                    } else if (data.code == 1) {
+                        alert(data.msg);
+                        window.location.href=data.url;
+                    }
+                }
+            }
+        });
+    }
+</script>

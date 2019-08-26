@@ -1,0 +1,230 @@
+<include file="public@header" />
+</head>
+<body>
+	<div class="wrap">
+		<ul class="nav nav-tabs">
+			<li><a href="{:url('config/index')}">配置列表</a></li>
+			<li class="active"><a>师徒佣金提成</a></li>
+		</ul>
+		<form method="post" class="form-horizontal js-ajax-form margin-top-20" action="{:url('config/edit')}">
+			<input type="hidden" name="id" value="{$config.id}">
+			<input type="hidden" name="process_id" value="{$config.process_id}">
+			<div class="form-group">
+				<label class="col-sm-2 control-label"><span class="form-required">*</span>佣金收取类型</label>
+				<div class="col-md-6 col-sm-10">
+                    <label class="radio-inline"><input type="radio" value="0" id="type_y" name="type" onclick="toggleChecked('type_y','type_y_dv', true);toggleChecked('type_y','type_n_dv',false);" <if condition="$config.type == 0">checked</if>>固定佣金</label>
+                    <label class="radio-inline"><input type="radio" value="1" id="type_n" name="type" onclick="toggleChecked('type_n','type_n_dv', true);toggleChecked('type_n','type_y_dv',false);" <if condition="$config.type == 1">checked</if>>区间</label>
+				</div>
+			</div>
+			<div class="form-group" id="type_y_dv" <neq name="$config.type" value="0">style="display: none"</neq>>
+                <label for="input-total_commission" class="col-sm-2 control-label"><span class="form-required">*</span>总佣金</label>
+				<div class="col-md-6 col-sm-10">
+					<input type="text" class="form-control" id="input-total_commission" name="total_commission" value="{$config.total_commission|default=''}">
+				</div>
+			</div>
+            <div <neq name="$config.type" value="1">style="display: none"</neq> id="type_n_dv">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label"><span class="form-required">*</span>价格区间</label>
+                    <div class="col-md-6 col-sm-10">
+                        <table class="table table-hover table-bordered" id="table_range" width="100%">
+                            <thead>
+                                <tr>
+                                    <td>价格区间</td>
+                                    <td>佣金收取方式</td>
+                                    <td>数值</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <notempty name="$config.ranges">
+                                <foreach name="$config.ranges" item="vo" index="k">
+                                    <tr>
+                                        <td class="form-inline">
+                                            <input type="text" class="form-control" name="start_price{$vo.id}" value="{$vo.start_price|default=''}" style="width: 120px;"> -
+                                            <input type="text" class="form-control" name="end_price{$vo.id}" value="{$vo.end_price|default=''}" style="width: 120px;">
+                                        </td>
+                                        <td>
+                                            <label class="radio-inline"><input type="radio" value="0" name="range_type{$vo.id}" <if condition="$vo.range_type == 0">checked</if>>固定金额</label>
+                                            <label class="radio-inline"><input type="radio" value="1" name="range_type{$vo.id}" <if condition="$vo.range_type == 1">checked</if>>百分比</label>
+                                            <label class="radio-inline"><input type="radio" value="2" name="range_type{$vo.id}" <if condition="$vo.range_type == 2">checked</if>>步进</label>
+                                        </td>
+                                        <td id="range_num_td{$vo.id}" class="form-inline">
+                                            <if condition="$vo.range_type == 2">
+                                                每隔 <input type="text" style="width: 80px" class="form-control" name="step_num{$vo.id}" value="{$vo.step_num|default=''}"> 收取
+                                                <input type="text" style="width: 80px" class="form-control" name="range_num{$vo.id}" value="{$vo.range_num|default=''}"> 元
+                                            <else/>
+                                                <input type="text" class="form-control" id="input-range_num" name="range_num{$vo.id}" value="{$vo.range_num|default=''}">
+                                            </if>
+                                            <input type="hidden" name="range_id[]" value="{$vo.id}">
+                                        </td>
+                                        <td>
+                                            <a onclick="javascript:$(this).parent().parent().remove();"><i class="fa fa-minus-circle" aria-hidden="true"></i></a>
+                                        </td>
+                                    </tr>
+                                </foreach>
+                            </notempty>
+                            </tbody>
+                        </table>
+                        <input type="button" class="form-control btn-primary" value="添加区间" onclick="addRange();">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label"><span class="form-required">*</span>刷客佣金类型</label>
+                <div class="col-md-6 col-sm-10">
+                    <label class="radio-inline"><input type="radio" value="0" id="bg_type_y" name="bg_type" onclick="toggleChecked('bg_type_y','bg_type_y_dv', true);toggleChecked('bg_type_y','bg_type_n_dv',false);" <if condition="$config.bg_type == 0">checked</if>>固定佣金</label>
+                    <label class="radio-inline"><input type="radio" value="1" id="bg_type_n" name="bg_type" onclick="toggleChecked('bg_type_n','bg_type_n_dv', true);toggleChecked('bg_type_n','bg_type_y_dv',false);" <if condition="$config.bg_type == 1">checked</if>>区间</label>
+                </div>
+            </div>
+
+            <div <neq name="$config.bg_type" value="1">style="display: none"</neq> id="bg_type_n_dv">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label"><span class="form-required">*</span>价格区间</label>
+                    <div class="col-md-6 col-sm-10">
+                        <table class="table table-hover table-bordered" id="tb_range" width="100%">
+                            <thead>
+                            <tr>
+                                <td>价格区间</td>
+                                <td>佣金收取方式</td>
+                                <td>数值</td>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <notempty name="$config.ranges">
+                                <foreach name="$config.bg_ranges" item="vo" index="k">
+                                    <tr>
+                                        <td class="form-inline">
+                                            <input type="text" class="form-control" name="start_price{$vo.id}" value="{$vo.start_price|default=''}" style="width: 120px;"> -
+                                            <input type="text" class="form-control" name="end_price{$vo.id}" value="{$vo.end_price|default=''}" style="width: 120px;">
+                                        </td>
+                                        <td>
+                                            <label class="radio-inline"><input type="radio" value="0" name="range_type{$vo.id}" <if condition="$vo.range_type == 0">checked</if>>固定金额</label>
+                                            <label class="radio-inline"><input type="radio" value="1" name="range_type{$vo.id}" <if condition="$vo.range_type == 1">checked</if>>百分比</label>
+                                            <label class="radio-inline"><input type="radio" value="2" name="range_type{$vo.id}" <if condition="$vo.range_type == 2">checked</if>>步进</label>
+                                        </td>
+                                        <td id="range_num_td{$vo.id}" class="form-inline">
+                                            <if condition="$vo.range_type == 2">
+                                                每隔 <input type="text" style="width: 80px" class="form-control" name="step_num{$vo.id}" value="{$vo.step_num|default=''}"> 收取
+                                                <input type="text" style="width: 80px" class="form-control" name="range_num{$vo.id}" value="{$vo.range_num|default=''}"> 元
+                                                <else/>
+                                                <input type="text" class="form-control" name="range_num{$vo.id}" value="{$vo.range_num|default=''}">
+                                            </if>
+                                            <input type="hidden" name="bg_range_id[]" value="{$vo.id}">
+                                        </td>
+                                        <td>
+                                            <a onclick="javascript:$(this).parent().parent().remove();"><i class="fa fa-minus-circle" aria-hidden="true"></i></a>
+                                        </td>
+                                    </tr>
+                                </foreach>
+                            </notempty>
+                            </tbody>
+                        </table>
+                        <input type="button" class="form-control btn-primary" value="添加区间" onclick="addBgRange();">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group" id="bg_type_y_dv" <neq name="$config.bg_type" value="0">style="display: none"</neq>>
+                <label for="input-total_commission" class="col-sm-2 control-label"><span class="form-required">*</span>刷客佣金</label>
+                <div class="col-md-6 col-sm-10">
+                    <input type="text" class="form-control" name="bg_total_commission" value="{$config.bg_total_commission|default=''}">
+                </div>
+            </div>
+			<div class="form-group">
+				<label for="input-parent_commission" class="col-sm-2 control-label"><span class="form-required">*</span>父辈佣金</label>
+				<div class="col-md-6 col-sm-10">
+					<input type="text" class="form-control" id="input-parent_commission" name="parent_commission" value="{$config.parent_commission|default=''}">
+				</div>
+			</div>
+			<div class="form-group">
+                <label for="input-ancestry_commission" class="col-sm-2 control-label"><span class="form-required">*</span>祖辈佣金</label>
+				<div class="col-md-6 col-sm-10">
+					<input type="text" class="form-control" id="input-ancestry_commission" name="ancestry_commission" value="{$config.ancestry_commission}">
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-offset-2 col-sm-10">
+					<button type="submit" class="btn btn-primary js-ajax-submit">保存</button>
+				</div>
+			</div>
+		</form>
+	</div>
+	<script src="__STATIC__/js/admin.js"></script>
+</body>
+<script>
+    function toggleChecked(id1, id2,flag) {
+        if ($('#'+id1).is(':checked')) {
+            if (flag) {
+                $('#'+id2).show();
+            } else {
+                $('#'+id2).hide();
+            }
+        } else {
+            if (flag) {
+                $('#'+id2).hide();
+            } else {
+                $('#'+id2).show();
+            }
+        }
+    }
+    
+    function addRange() {
+        var index = new Date().getTime();
+        var html = '<tr>\n' +
+            '                                    <td class="form-inline">\n' +
+            '                                        <input type="text" class="form-control" name="start_price'+index+'" maxlength="8" style="width: 120px;"> -\n' +
+            '                                        <input type="text" class="form-control" name="end_price'+index+'" maxlength="8" style="width: 120px;">\n' +
+            '                                    </td>\n' +
+            '                                    <td>\n' +
+            '                                        <label class="radio-inline"><input type="radio" class="range_type" id="range_type_0" name="range_type'+index+'" value="0" checked>固定金额</label>\n' +
+            '                                        <label class="radio-inline"><input type="radio" class="range_type" id="range_type_1" name="range_type'+index+'" value="1">百分比</label>\n' +
+            '                                        <label class="radio-inline"><input type="radio" class="range_type" id="range_type_2" name="range_type'+index+'" value="2">步进</label>\n' +
+            '                                        <input type="hidden" name="range_id[]" value="'+index+'">\n' +
+            '                                    </td>\n' +
+            '                                    <td class="form-inline" id="rang_num_td'+index+'">' +
+            '                                        <input type="text" class="form-control" name="range_num'+index+'">\n' +
+            '                                    </td>' +
+            '                                    <td>' +
+            '                                         <a onclick="javascript:$(this).parent().parent().remove();"><i class="fa fa-minus-circle" aria-hidden="true"></i></a>\n' +
+            '                                    </td>'
+        '                                </tr>';
+        $('#table_range tbody').append(html);
+    }
+
+    function addBgRange() {
+        var index = new Date().getTime();
+        var html = '<tr>\n' +
+            '                                    <td class="form-inline">\n' +
+            '                                        <input type="text" class="form-control" name="start_price'+index+'" style="width: 120px;"> -\n' +
+            '                                        <input type="text" class="form-control" name="end_price'+index+'" style="width: 120px;">\n' +
+            '                                    </td>\n' +
+            '                                    <td>\n' +
+            '                                        <label class="radio-inline"><input type="radio" class="range_type" name="range_type'+index+'" value="0" checked>固定金额</label>\n' +
+            '                                        <label class="radio-inline"><input type="radio" class="range_type" name="range_type'+index+'" value="1" >百分比</label>\n' +
+            '                                        <label class="radio-inline"><input type="radio" class="range_type" name="range_type'+index+'" value="2">步进</label>\n' +
+            '                                        <input type="hidden" name="bg_range_id[]" value="'+index+'">\n' +
+            '                                    </td>\n' +
+            '                                    <td class="form-inline"  id="rang_num_td'+index+'">\n' +
+            '                                        <input type="text" class="form-control" name="range_num'+index+'">\n' +
+            '                                    </td>\n' +
+            '                                    <td>\n' +
+            '                                         <a onclick="javascript:$(this).parent().parent().remove();"><i class="fa fa-minus-circle" aria-hidden="true"></i></a>\n' +
+            '                                    </td>'
+            '                                </tr>';
+        $('#tb_range tbody').append(html);
+    }
+
+    $(document).on('click', '.range_type', function(){
+        var html = '';
+        var id = $(this).attr('name').split('range_type')[1];
+        console.log($(this).val())
+        if ($(this).val() == '2') {
+            html ='每隔 <input type="text" style="width: 80px" class="form-control" name="step_num'+id+'"> 收取 <input type="text" style="width: 80px" class="form-control" name="range_num'+id+'"> 元';
+            $(this).parents('div:first').find('input[type="button"]').attr('disabled', 'disabled');
+        } else {
+            html = '<input type="text" class="form-control" name="range_num'+id+'">';
+            $(this).parents('div:first').find('input[type="button"]').removeAttr("disabled");
+        }
+        $('#rang_num_td'+id).html(html);
+    });
+</script>
+</html>

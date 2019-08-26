@@ -1,0 +1,166 @@
+<include file="public@header" />
+</head>
+<body>
+	<div class="wrap js-check-wrap">
+		<ul class="nav nav-tabs">
+			<li class="active"><a>任务列表</a></li>
+		</ul>
+        <form class="well form-inline margin-top-20" method="get" action="{:url('task/index')}">
+            任务类型:
+            <select class="form-control" name="process_id" style="width: 140px;">
+                <option value=''>全部</option>
+                <foreach name="$process" item="vo">
+                    <option value='{$vo.id}' <if condition="$vo.id == $process_id">selected</if>>{$vo.name}</option>
+                </foreach>
+            </select>
+            任务状态:
+            <select class="form-control" name="status" style="width: 140px;">
+                <option value='-1'>全部</option>
+                <option value='0' <if condition="'0' == $status">selected</if>>{:task_status('0')}</option>
+                <option value='1' <if condition="'1' == $status">selected</if>>{:task_status('1')}</option>
+                <option value='2' <if condition="'2' == $status">selected</if>>{:task_status('2')}</option>
+                <option value='3' <if condition="'3' == $status">selected</if>>{:task_status('3')}</option>
+            </select>
+            &nbsp;商家关键词:
+            <input type="text" class="form-control" name="keyword" style="width: 120px;" value="{$keyword}" placeholder="请输入关键词">
+            商家账号:
+            <input type="text" class="form-control" name="user_login" style="width: 130px;" value="{$user_login}" placeholder="手机号/账号/QQ">
+            &nbsp;任务名称:
+            <input type="text" class="form-control" name="task_name" style="width: 120px;" value="{$task_name}" placeholder="请输入任务名称">
+            任务编号:
+            <input type="text" class="form-control" name="task_no" style="width: 120px;" value="{$task_no}" placeholder="请输入任务编号">
+            &nbsp;<input type="submit" class="btn btn-primary" value="搜索" />
+            <a class="btn btn-danger" href="{:url('task/index')}">清空</a>
+        </form>
+		<table class="table table-hover table-bordered">
+			<thead>
+				<tr>
+					<th width="50">ID</th>
+                    <th>任务编号</th>
+                    <th>任务名称</th>
+                    <th>商家账号</th>
+                    <th>QQ</th>
+                    <th>关联店铺</th>
+                    <th>任务类型</th>
+                    <th>商品价格</th>
+                    <th width="100">佣金</th>
+                    <th>发放数量</th>
+                    <th>剩余数量</th>
+                    <th>宝贝链接</th>
+                    <th>提交时间</th>
+                    <th>任务状态</th>
+                    <th>任务开始时间</th>
+                    <th width="140">{:lang('ACTIONS')}</th>
+                </tr>
+            </thead>
+            <tbody>
+            <foreach name="tasks" item="vo" index="groupIndex">
+                <tr>
+                    <td>{$vo.id}</td>
+                    <td>{$vo.task_no}</td>
+                    <td>{$vo.task_name}</td>
+                    <td>{$vo.user_login}</td>
+                    <td>{$vo.qq}</td>
+                    <td>{$vo.name}</td>
+                    <td>{$vo.process_type}</td>
+                    <td>{$vo.product_price}</td>
+                    <td class="commission">{$vo.commission}</td>
+                    <td>{$vo.task_num}</td>
+                    <td>{$vo.remain_task_num}</td>
+                    <td><a href="{$vo.product_link}" target="_blank">点击查看</a></td>
+                    <td>{:date('Y-m-d H:i:s',$vo.create_time)}</td>
+                    <td>{:task_status($vo.status)}</td>
+                    <td>{:date('Y-m-d H:i:s',$vo.start_time)}</td>
+                    <td>
+                        <if condition="$vo.status == '0'">
+                            <a class="btn btn-xs btn-warning" data-toggle="modal" data-target="#myModal" onclick="javascript:$('#task_no').val('{$vo.task_no}')">审核</a>
+                        </if>
+                        <a class="btn btn-xs btn-warning btn-" href="{:url('task/edit')}?task_no={$vo.task_no}">编辑</a>
+                        <if condition="$vo.status == 1">
+                        <a class="btn btn-xs btn-danger js-ajax-dialog-btn" data-msg="确定要结束此任务吗？" href="{:url('task/end')}?task_no={$vo.task_no}">结束</a>
+                        </if>
+                    </td>
+                </tr>
+            </foreach>
+			</tbody>
+		</table>
+        <div class="table-actions">
+            综合统计：共 {$total} 条记录——当前统计：本页 {$nowTotal} 条记录  总佣金：{$commission}元  当前页佣金 <span id="total_commission"></span>元
+        </div>
+        <div class="pagination">{$page}</div>
+	</div>
+    <!-- 模态框（Modal） -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        任务审核
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <form id="audit_form" class="js-ajax-form" action="{:url('task/audit')}" method="post">
+                        <input type="hidden" id="task_no" name="task_no">
+                        <div class="form-group">
+                            <label class="control-label">审核结果:</label>
+                            <label class="radio-inline"><input type="radio" id="status_Y" name="status" value="1" onclick="toggleChecked()">通过</label>
+                            <label class="radio-inline"><input type="radio" id="status_N" name="status" value="2" onclick="toggleChecked()">拒绝</label>
+                            <br>
+                            <span id="status_msg" style="display:none;color: red">请选择审核结果</span>
+                        </div>
+                        <div class="form-group" id="status_N_dv" style="display: none">
+                            <label for="reject_reason" class="control-label">拒绝原因:</label>
+                            <textarea class="form-control" id="reject_reason" name="reject_reason"></textarea>
+                            <br>
+                            <span id="reason_msg" style="display:none;color: red">拒绝原因不能为空</span>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                            </button>
+                            <button type="submit" class="btn btn-primary" onclick="return audit()">
+                                提交更改
+                            </button>
+                        </div>
+                    </form>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal -->
+        </div>
+    </div>
+	<script src="__STATIC__/js/admin.js"></script>
+<script>
+    
+    function toggleChecked() {
+        if ($('#status_N').is(':checked')) {
+            $('#status_N_dv').show();
+        } else {
+            $('#status_N_dv').hide();
+        }
+    }
+    
+    function audit() {
+        var status = $('input[name="status"]:checked').val();
+        var reason = $('#reject_reason').val();
+        $('#status_msg').hide();
+        $('#reason_msg').hide();
+        if (status == null) {
+            $('#status_msg').show();
+            return false;
+        } else if (status == '2' && reason == '') {
+            $('#reason_msg').show();
+            return false;
+        }
+        return true;
+    }
+    $(document).ready(function() {
+        var total_commission  = 0;
+        $('.commission').each(function(){
+            total_commission += Number($(this).html());
+        })
+        $('#total_commission').html(total_commission);
+    });
+</script>
+</body>
+</html>

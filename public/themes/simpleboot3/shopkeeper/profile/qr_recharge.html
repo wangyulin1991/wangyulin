@@ -1,0 +1,247 @@
+
+<include file="public@head"/>
+<style>
+    body, ul, ol, li, p, h1, h2, h3, h4, h5, h6, form, fieldset, table, td, img, div {
+        margin: 0;
+        padding: 0;
+        border: 0;
+        background: #ffffff;
+    }
+
+    body {
+        font-size: 12px;
+        font-family: "Microsoft YaHei"
+    }
+
+    #nav {
+        height: 37px;
+        width: 1100px;
+        border-bottom: solid 2px #2b2de0!important;
+    }
+
+    #nav a {
+        display: block;
+        width: 150px;
+        height: 35px;
+        line-height: 35px;
+        font-size: 15px;
+        text-align: center;
+        float: left;
+        background-color: #ffffff;
+        cursor: pointer;
+        color: #2B2DE0;
+        box-sizing: border-box;
+        font-weight: bold;
+        border: solid 2px #2B2DE0;
+        margin-right: 25px;
+        border-top-left-radius: 7px;
+        border-top-right-radius: 7px;
+        border-bottom: none;
+        text-decoration: none;
+        text-underline: none;
+    }
+
+    #nav a.on {
+        background: #2B2DE0;
+        color: #ffffff;
+        text-underline: none;
+        text-decoration: none;
+    }
+
+    #contentBox {
+        width: 100%;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+    }
+
+    #contentBox .box {
+        display: none;
+        box-sizing: border-box;
+        padding: 0.1rem;
+    }
+
+    #contentBox .box.active {
+        display: block;
+        box-sizing: border-box;
+    }
+
+    /*#contentBox .box ul li img {*/
+        /*width: 100%;*/
+        /*height: 4rem;*/
+    /*}*/
+
+    /*#contentBox .box ul li p {*/
+        /*margin-top: -0.65rem*/
+    /*}*/
+
+    /*#contentBox .box ul li {*/
+        /*width: 100%;*/
+        /*color: #fe7e2f;*/
+        /*font-size: 0.3rem;*/
+        /*line-height: 0.8rem;*/
+        /*margin-bottom: 0.3rem;*/
+        /*font-weight: bold;*/
+    /*}*/
+
+    /*#contentBox .box ul li:last-child {*/
+        /*margin-bottom: 0;*/
+    /*}*/
+
+    .table {
+        width: 100%;
+    }
+
+    .table th {
+        border: solid 1px #d4d4d4;
+    }
+
+    .table tr {
+        height: 0.5rem;
+        line-height: 0.5rem;
+    }
+
+    body {
+        margin: 0;
+        padding: 0;
+    }
+
+    .d_form {
+        width: 100%;
+        min-height: 70px;
+        background: #ffffff;
+        padding: 30px 0 50px 0;
+    }
+
+    .d_form label {
+        width: 200px;
+        text-align: right;
+        display: inline-block;
+    }
+
+    .d_in {
+        height: 50px;
+        line-height: 50px;
+    }
+
+    select {
+        width: 300px;
+        height: 30px;
+        border: solid 1px #9f9f9f;
+        border-radius: 5px;
+    }
+
+    input {
+        width: 300px;
+        height: 30px;
+        border: solid 1px #9f9f9f;
+        border-radius: 5px;
+        padding-left: 10px;
+        box-sizing: border-box;
+    }
+
+    .input1 {
+        width: 15px;
+        height: 15px;
+    }
+
+    .btn_add {
+        display: inline-block;
+        width: 100px;
+        height: 30px;
+        line-height: 30px;
+        text-align: center;
+        text-decoration: none;
+        border: none;
+        border-radius: 5px;
+        background: #fe0000;
+        color: #FFFFFF;
+    }
+
+    label {
+        font-weight: normal;
+        font-size: 18px;
+    }
+
+    .save {
+        width: 130px;
+        height: 35px;
+        line-height: 35px;
+        text-align: center;
+        border: none;
+        border-radius: 5px;
+        background: #fe0000;
+        color: #ffffff;
+        margin-left: 245px;
+        font-size: 14px;
+        margin-top: 20px;
+    }
+
+    a {
+        text-decoration: none;
+    }
+    ul{list-style: none;}
+    #contentBox #ul{display: inline-block;margin-bottom: -10px;}
+    #contentBox #ul li{width: 100px;height: 32px;float: left;margin-right: 10px;}
+    #contentBox #ul li img{width: 100%;height: 30px;vertical-align: top;}
+    .selected{border: 1px solid #acd899;
+        background: #eaf8e5;}
+    .selected img{background: #eaf8e5;width: 100%;height: 30px;vertical-align: top;}
+    .tab{width: 600px;margin: auto;position: absolute;top: 30px;left: 0;right: 0;bottom: 0;}
+</style>
+<div class="tab">
+    <div id="contentBox">
+        <div class="box active">
+            <div class="d_form">
+<!--                <form id="form" action="{:url('profile/recharge')}" method="post">-->
+<!--                    <div class="d_in">-->
+<!--                        <label>选择支付方式：</label>-->
+<!--                        <ul id="ul">-->
+<!--                            <li class="selected"><img src="__TMPL__/public/assets/home/images/alipay.png" data-way="0"></li>-->
+<!--                        </ul>-->
+<!--                    </div>-->
+<!--                    <input type="hidden" id="pay_way" name="pay_way" value="0">-->
+<!--                    <div  style="clear:both;"></div>-->
+<!--                    <div class="d_in">-->
+<!--                        <label>充值金额：</label>-->
+<!--                        <input type="text" id="input-money" name="money">-->
+<!--                    </div>-->
+<!--                    <input type="hidden" name="vild_code" value="{$vild_code}">-->
+<!--                    <button class="save" type="button" onclick="javascript:recharge()">立刻充值</button>-->
+<!--                </form>-->
+                <div>
+                    <img src="/static/shopkeeper/images/alipay.jpeg" width="300px;margin:0 auto;">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        $("#ul li").click(function() {
+            $('#pay_way').val($(this).find('img:first').data('way'));
+            $(this).addClass("selected").siblings("li").removeClass("selected");
+        });
+    });
+
+    function recharge() {
+        if ($('#pay_way').val() == '') {
+            alert('支付方式不能为空');
+            return;
+        }
+        if ($('#input-money').val() == '') {
+            alert('充值金额不能为空');
+            return;
+        }
+
+        $('#form').submit();
+        window.showOverlay();
+        var get = setInterval("getStatus()",1000);
+        setTimeout(function () {
+            clearInterval(get);
+            window.hideOverlay();
+        },120000);
+    }
+
+</script>

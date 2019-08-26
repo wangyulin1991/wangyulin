@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>商户后台管理中心</title>
+        <include file="public@head"/>
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <style>
+        body{margin: 0;padding: 0;}
+        .d_form{width: 100%;min-height: 70px;background: #ffffff;padding: 5px 0 50px 0;}
+        .d_form label{width: 200px;text-align: right;display: inline-block;}
+        .d_in{height: 50px;line-height: 50px;}
+        select{width: 300px;height: 30px;border: solid 1px #9f9f9f;border-radius: 5px;}
+        input{width: 300px;height: 30px;border: solid 1px #9f9f9f;border-radius: 5px;padding-left: 10px;box-sizing: border-box;}
+        .input1{width: 15px;height: 15px;}
+
+        label{font-weight: normal;font-size: 18px;}
+        .save {
+            width: 130px;
+            height: 35px;
+            line-height: 35px;
+            text-align: center;
+            border: none;
+            border-radius: 5px;
+            background: #fe0000;
+            color: #ffffff;
+            margin-left: 285px;
+            font-size: 14px;
+        }
+        .daohang{width: 100%;height: 30px;line-height: 30px;padding-left: 15px;padding-top: 10px;font-size: 16px}
+    </style>
+</head>
+<body>
+<div class="d_form">
+    <div class="daohang"><span>店铺管理</span> > <span>编辑店铺</span></div><br/>
+    <form id="form" action="{:url('shop/edit')}" method="post">
+        <input type="hidden" name="id" value="{$shop.id}">
+        <div class="d_in">
+            <label>店铺类型：</label>
+            <select id="input-type" name="type">
+                <volist name="platforms" id="platform">
+                    <if condition="$platform['id'] eq $shop['type']">
+                        <option value="{$platform.id}" selected>{$platform.platform_name}</option>
+                    <else/>
+                        <option value="{$platform.id}">{$platform.platform_name}</option>
+                    </if>
+
+                </volist>
+            </select>
+        </div>
+        <div class="d_in">
+            <label>店铺名：</label>
+            <input type="text" id="input-name" name="name" value="{$shop.name}">
+        </div>
+        <div class="d_in">
+            <label>旺旺号：</label>
+            <input type="text" name="trademanager" value="{$shop.trademanager}">
+        </div>
+        <div class="d_in">
+            <label>店铺链接：</label>
+            <input type="text" name="link" value="{$shop.link}" maxlength="255">
+        </div>
+        <div>
+            <button type="button" class="save" onclick="submitForm()">保存</button>
+        </div>
+    </form>
+</div>
+<script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<script>
+    function submitForm() {
+        $.ajax({
+            url: "{:url('shop/edit')}",
+            data: $('#form').serialize(),
+            type: 'POST',
+            dateType: 'json',
+            success: function (data) {
+                if (data != null) {
+                    if (data.code == 0) {
+                        alert(data.msg);
+                    } else if (data.code == 1) {
+                        alert(data.msg);
+                        window.location.href=data.url;
+                    }
+                }
+            }
+        });
+    }
+</script>
+</body>
+</html>

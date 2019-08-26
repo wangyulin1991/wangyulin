@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        body{margin: 0;padding: 0;}
+        .d_form{width: 100%;background: #ffffff;padding-bottom: 100px;padding-top: 5px;}
+        .d_form label{width: 200px;text-align: right;display: inline-block; }
+        .d_in{height: 50px;line-height: 50px;}
+        select{width: 300px;height: 30px;border: solid 1px #9f9f9f;border-radius: 5px;}
+        input{width: 300px;height: 30px;border: solid 1px #9f9f9f;border-radius: 5px;padding-left: 10px;box-sizing: border-box;}
+        .input1{width: 15px;height: 15px;}
+        textarea{width: 300px;height: 100px;resize: none;vertical-align: top;border: solid 1px #9f9f9f;border-radius: 5px; padding: 10px;box-sizing: border-box; }
+
+        .save{width: 130px;height: 35px;line-height:35px;text-align: center;border: none; border-radius: 5px;background: #fe0000;color: #ffffff;margin-left: 285px;font-size: 14px;}
+
+        table{margin-left: 16.5%; margin-top: 0;box-sizing: border-box; }
+        /*table label{width: 94px;height: 41px;}*/
+        .file-item{display: inline-block;position: relative;}
+        .gunabi{width: 20px!important;height: 20px!important;position: absolute;right: 5px; top: 5px;}
+    </style>
+    <link rel="stylesheet" type="text/css" href="__TMPL__/public/assets/webuploader1/webuploader.css">
+    <!--引入JS-->
+    <script type="text/javascript" src="__TMPL__/public/assets/js/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="__TMPL__/public/assets/webuploader1/webuploader.js"></script>
+    <script language="javascript" type="text/javascript" src="__TMPL__/public/assets/home/My97DatePicker/WdatePicker.js"></script>
+
+</head>
+<body>
+<div class="d_form">
+    <div class="daohang"><span>任务管理</span> > <span>发布任务</span></div><br/>
+    <form id="form" action="{:url('task/edit_second')}" enctype="multipart/form-data" method="post">
+        <input type="hidden" name="task_no" value="{$task_no}">
+        <input type="hidden" name="process_id" value="{$process_id}">
+        <div>{$process_id}</div>
+        <if condition="$process_id eq 11">
+            <div>
+                <label>分批发放：</label>
+                <span>任务总数：{$task.task_num}</span>
+                <table id="subTaskTb11" width="60%">
+                    <tr style="width: 100%">
+                        <th width="40%">
+                            时间
+                        </th>
+                        <th width="10%">
+                            数量
+                        </th>
+                        <th width="40%">
+                            第二天开始下单时间
+                        </th>
+                        <th width="10%">
+                        </th>
+                    </tr>
+                    <foreach name="tasks" item="v">
+                        <tr>
+                            <td>
+                                <input class="Wdate" type="text" style="height: 30px;" id="{$v.id}" onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:00:00', minDate:'%y-%M-%d {%H+1}:00:00'})" name="start_time{$v.id}" value="{:date('Y-m-d H:i:s', $v.start_time)}">
+                            </td>
+                            <td>
+                                <input type="text" name="sub_task_num{$v.id}" oninput="value=value.replace(/[^\d]/g,'')" onchange="cal_task_num($(this))" value="{$v.sub_task_num}">
+                            </td>
+                            <td>
+                                <input class="Wdate" type="text" style="height: 30px;" id="{$v.id}+1" onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:00:00', minDate:'%y-%M-{%d+1} 00:00:00'})" name="order_time{$v.id}" value="">
+                            </td>
+                            <td>
+                                <input type="hidden" value="{$v.id}" name="sub_id[]">
+                            </td>
+                        </tr>
+                    </foreach>
+                </table>
+            </div>
+            <div class="d_in">
+                <label></label>
+                <input type="button" value="+" onclick="javascript:addSubTask11();">
+            </div>
+        <elseif condition="$process_id eq 4"/>
+            <div>
+                <label>分批发放：</label>
+                <span>任务总数：{$task.task_num}</span>
+                <table id="subTaskTb4" width="60%">
+                    <tr style="width: 100%">
+                        <th width="40%">
+                            时间
+                        </th>
+                        <th width="10%">
+                            数量
+                        </th>
+                        <th width="40%">
+                            第三天开始下单时间
+                        </th>
+                        <th width="10%">
+                        </th>
+                    </tr>
+                    <foreach name="tasks" item="vv">
+                        <tr>
+                            <td>
+                                <input class="Wdate" type="text" style="height: 30px;" id="{$vv.id}" onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:00:00', minDate:'%y-%M-%d {%H+1}:00:00'})" name="start_time{$vv.id}" value="{:date('Y-m-d H:i:s', $vv.start_time)}">
+                            </td>
+                            <td>
+                                <input type="text" name="sub_task_num{$vv.id}" oninput="value=value.replace(/[^\d]/g,'')" onchange="cal_task_num($(this))" value="{$vv.sub_task_num}">
+                            </td>
+                            <td>
+                                <input class="Wdate" type="text" style="height: 30px;" id="{$vv.id}+1" onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:00:00', minDate:'%y-%M-{%d+2} 00:00:00'})" name="order_time{$vv.id}" value="">
+                            </td>
+                            <td>
+                                <input type="hidden" value="{$vv.id}" name="sub_id[]">
+                            </td>
+                        </tr>
+                    </foreach>
+                </table>
+            </div>
+            <div class="d_in">
+                <label></label>
+                <input type="button" value="+" onclick="javascript:addSubTask4();">
+            </div>
+        <else />
+            <div>
+                <label>分批发放：</label>
+                <span>任务总数：{$task.task_num}</span>
+                <table id="subTaskTb" width="60%">
+                    <tr style="width: 100%">
+                        <th width="50%">
+                            时间
+                        </th>
+                        <th width="40%">
+                            数量
+                        </th>
+                        <th width="10%">
+                        </th>
+                    </tr>
+                    <foreach name="tasks" item="vo">
+                        <tr>
+                            <td>
+                                <input class="Wdate" type="text" style="height: 30px;" id="{$vo.id}" onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:00:00', minDate:'%y-%M-%d {%H+1}:00:00'})" name="start_time{$vo.id}" value="{:date('Y-m-d H:i:s', $vo.start_time)}">
+                            </td>
+                            <td>
+                                <input type="text" name="sub_task_num{$vo.id}" oninput="value=value.replace(/[^\d]/g,'')" onchange="cal_task_num($(this))" value="{$vo.sub_task_num}">
+                            </td>
+                            <td>
+                                <input type="hidden" value="{$vo.id}" name="sub_id[]">
+                            </td>
+                        </tr>
+                    </foreach>
+                </table>
+            </div>
+            <div class="d_in">
+                <label></label>
+                <input type="button" value="+" onclick="javascript:addSubTask();">
+            </div>
+        </if>
+        <div >
+            <label>评论列表：</label>
+            <span style="color: red">如果有自定义的图片或者文字评论要求，需额外收费，图片/1元每张，文字/1元每段</span>
+            <table id="commentTb">
+                <foreach name="$task.comment" item="vo" index="k">
+                <tr>
+                    <td>
+                        <div class="wu-example">
+                            <!--用来存放item-->
+                            <div id="fileList_f{$k}" class="uploader-list">
+                                <notempty name="$vo.imgs">
+                                    <foreach name="$vo.imgs" item="v">
+                                        <div id="WU_FILE_{$k + 100000}" class="file-item thumbnail upload-state-done">
+                                            <img class="gunabi" src="__TMPL__/public/assets/home/images/delete.jpg">
+                                            <img src="{:cmf_get_image_preview_url($v)}" width="100">
+                                            <div class="info"></div>
+                                            <input type="hidden" name="comment_img_f{$k}[]" value="{$v}">
+                                        </div>
+                                    </foreach>
+                                </notempty>
+                            </div>
+                            <div class="filePicker" id="f{$k}" onclick="addFile('f{$k}');">选择图片</div>
+                        </div>
+                        <input name="comment_f{$k}" type="text" value="{$vo.content}">
+                        <input type="hidden" name="comment_suf[]" value="f{$k}">
+                    </td>
+                </tr>
+                </foreach>
+            </table>
+        </div>
+        <div class="d_in">
+            <label></label>
+            <input type="button" value="+" onclick="javascript:addComment();">
+        </div>
+
+        <div>
+            <button type="button" class="btn btn-primary save"><a href="{:url('task/edit_first')}?task_no={$task_no}" style="text-decoration: none;color: white">上一页</a></button>
+            <button type="button" class="btn btn-primary save" style="margin-left: 80px" onclick="submitForm()">发布</button>
+        </div>
+    </form>
+</div>
+</body>
+<script>
+    var uploader = null;
+    function addComment() {
+        var count = new Date().getTime();
+        var html = '<tr><td>' +
+                        '<div class="wu-example">'+
+                            '<div id="fileList_f'+count+'" class="uploader-list"></div>'+
+                            '<div class="filePicker" id="f'+count+'" onclick="addFile(\'f'+count+'\');">选择图片</div>'+
+                        '</div>'+
+                        '<div id="file_dv_f'+count+'"></div>'+
+                        '<input name="comment_f'+count+'" type="text">'+
+                        '<input id="comment_del_'+count+'" type="button" value="-" style="width: 25px;margin-left: 20px" onclick="$(this).parent().parent().remove()">'+
+                        '<input type="hidden" name="comment_suf[]" value="f'+count+'">'+
+                    '</td></tr>';
+
+        $('#commentTb').append(html);
+        uploader.destroy();
+        uploader = WebUploader.create(opts);
+        init();
+    }
+    var action_id = '';
+
+    function addFile(id) {
+        action_id = id;
+    }
+
+    var params = '&multi=1&filetype=image&app=app';
+
+    var opts = {
+
+        // 选完文件后，是否自动上传。
+        auto: true,
+
+        duplicate: false,
+        // swf文件路径
+        swf: '__TMPL__/public/assets/webuploader1/Uploader.swf',
+
+        // 文件接收服务端。
+        server: '{:url("user/Asset/webuploader")}?_ajax=1'+params,
+
+        // 选择文件的按钮。可选。
+        // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+        pick: '.filePicker',
+
+        // 只允许选择图片文件。
+        accept: {
+            title: 'Images',
+            extensions: 'gif,jpg,jpeg,bmp,png',
+            mimeTypes: 'image/*'
+        }
+    };
+    // 初始化Web Uploader
+    var uploader = WebUploader.create(opts);
+    init();
+
+    function init() {
+        // 当有文件添加进来的时候
+        uploader.on( 'fileQueued', function( file ) {
+            var $li = $(
+                '<div id="' + file.id + '" class="file-item thumbnail">' + '<img class="gunabi" src="__TMPL__/public/assets/home/images/delete.jpg">' +
+                '<img>' +
+                '<input type="hidden" name="comment_img_'+action_id+'[]">'+
+                '</div>'
+                ),
+                $img = $li.find('img[class != "gunabi"]');
+
+            // $list为容器jQuery实例
+            $('#fileList_'+action_id).append( $li );
+
+            // 创建缩略图
+            // 如果为非图片文件，可以不用调用此方法。
+            // thumbnailWidth x thumbnailHeight 为 100 x 100
+            uploader.makeThumb( file, function( error, src ) {
+                if ( error ) {
+                    $img.replaceWith('<span>不能预览</span>');
+                    return;
+                }
+
+                $img.attr( 'src', src );
+            }, 100, 100 );
+        });
+
+
+        // 文件上传过程中创建进度条实时显示。
+        uploader.on( 'uploadProgress', function( file, percentage ) {
+            var $li = $( '#'+file.id ),
+                $percent = $li.find('.progress span');
+
+            // 避免重复创建
+            if ( !$percent.length ) {
+                $percent = $('<p class="progress"><span></span></p>')
+                    .appendTo( $li )
+                    .find('span');
+            }
+
+            $percent.css( 'width', percentage * 100 + '%' );
+        });
+
+        // 文件上传成功，给item添加成功class, 用样式标记上传成功。
+        uploader.on( 'uploadSuccess', function( file, response ) {
+            $( '#'+file.id ).addClass('upload-state-done');
+            $( '#'+file.id ).find('input[name="comment_img_'+action_id+'[]"]').val(response.data['filepath']);
+        });
+
+
+        // 完成上传完了，成功或者失败，先删除进度条。
+        uploader.on( 'uploadComplete', function( file ) {
+            $( '#'+file.id ).find('.progress').remove();
+        });
+    }
+
+    $('#commentTb').on('click','.gunabi',function () {
+        $(this).parent().remove();
+    });
+
+    function submitForm() {
+        var success = false;
+        $.ajax({
+            url: "{:url('task/edit_second')}",
+            data: $('#form').serialize(),
+            type: 'POST',
+            async:false,
+            dateType: 'json',
+            success: function (data) {
+                if (data != null) {
+                    if (data.code == 0) {
+                        if (data.data==2) {
+                            var r = confirm(data.msg);
+                            if (r==true){
+                                success = true;
+                            }
+                        } else {
+                            alert(data.msg);
+                        }
+                    } else if (data.code == 1) {
+                        window.location.href=data.url;
+                    }
+                }
+            }
+        });
+        if (success) {
+            var iTop = (window.screen.height-30-300)/2;       //获得窗口的垂直位置;
+            var iLeft = (window.screen.width-10-600)/2;        //获得窗口的水平位置;
+            var strWindowFeatures = "width=600,height=300,toolbar=0,menubar=no,location=no,resizable=no,scrollbars=true,status=true,top="+iTop+",left="+iLeft;
+            window.open("{:url('shopkeeper/profile/qr_recharge')}", "B_page", strWindowFeatures);
+        }
+    }
+
+    function addSubTask11() {
+        var id = new Date().getTime()+Math.floor(Math.random()*10000);
+        var html =  '<tr>' +
+            '<td>' +
+            '<input class="Wdate" type="text" style="height: 30px;" id="'+id+'" onClick="WdatePicker({dateFmt:\'yyyy-MM-dd HH:00:00\', minDate:\'%y-%M-%d {%H+1}:00:00\'})" name="start_time'+id+'">' +
+            '</td>' +
+            '<td>' +
+            '<input type="text" name="sub_task_num'+id+'" onchange="cal_task_num($(this))">'+
+            '</td>' +
+            '<td>' +
+            '<input class="Wdate" type="text" style="height: 30px;" id="'+id+'" onClick="WdatePicker({dateFmt:\'yyyy-MM-dd HH:00:00\', minDate:\'%y-%M-{%d+1} 00:00:00\'})" name="order_time'+id+'">' +
+            '</td>' +
+            '<td>' +
+            '<input type="button" value="-" style="width: 25px;margin-left: 20px" onclick="$(this).parent().parent().remove()">'+
+            '<input type="hidden" value="'+id+'" name="sub_id[]">'+
+            '</td>' +
+            '</tr>';
+
+        $('#subTaskTb11').append(html);
+    }
+
+    function addSubTask4() {
+        var id = new Date().getTime()+Math.floor(Math.random()*10000);
+        var html =  '<tr>' +
+            '<td>' +
+            '<input class="Wdate" type="text" style="height: 30px;" id="'+id+'" onClick="WdatePicker({dateFmt:\'yyyy-MM-dd HH:00:00\', minDate:\'%y-%M-%d {%H+1}:00:00\'})" name="start_time'+id+'">' +
+            '</td>' +
+            '<td>' +
+            '<input type="text" name="sub_task_num'+id+'" onchange="cal_task_num($(this))">'+
+            '</td>' +
+            '<td>' +
+            '<input class="Wdate" type="text" style="height: 30px;" id="'+id+'" onClick="WdatePicker({dateFmt:\'yyyy-MM-dd HH:00:00\', minDate:\'%y-%M-{%d+2} 00:00:00\'})" name="order_time'+id+'">' +
+            '</td>' +
+            '<td>' +
+            '<input type="button" value="-" style="width: 25px;margin-left: 20px" onclick="$(this).parent().parent().remove()">'+
+            '<input type="hidden" value="'+id+'" name="sub_id[]">'+
+            '</td>' +
+            '</tr>';
+
+        $('#subTaskTb4').append(html);
+    }
+
+
+    function addSubTask() {
+        var id = new Date().getTime()+Math.floor(Math.random()*10000);
+        var html =  '<tr>' +
+            '<td>' +
+            '<input class="Wdate" type="text" style="height: 30px;" id="'+id+'" onClick="WdatePicker({dateFmt:\'yyyy-MM-dd HH:00:00\', minDate:\'%y-%M-%d {%H+1}:00:00\'})" name="start_time'+id+'">' +
+            '</td>' +
+            '<td>' +
+            '<input type="text" name="sub_task_num'+id+'" onchange="cal_task_num($(this))">'+
+            '</td>' +
+            '<td>' +
+            '<input type="button" value="-" style="width: 25px;margin-left: 20px" onclick="$(this).parent().parent().remove()">'+
+            '<input type="hidden" value="'+id+'" name="sub_id[]">'+
+            '</td>' +
+            '</tr>';
+
+        $('#subTaskTb').append(html);
+    }
+
+
+    function cal_task_num(obj) {
+        var task_num = 0;
+        $('input[name^="sub_task_num"]').each(function () {
+            task_num += parseInt($(this).val());
+        })
+        if (task_num > {$task.task_num}) {
+            obj.val('');
+            alert('任务数量之和不能大于总数');
+        }
+    }
+</script>
+</html>

@@ -1,0 +1,79 @@
+<include file="public@header" />
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+</head>
+<body>
+	<div class="wrap">
+		<ul class="nav nav-tabs">
+			<li><a href="{:url('shop/index')}">店铺列表</a></li>
+			<li class="active"><a href="{:url('shop/edit')}">添加店铺</a></li>
+		</ul>
+		<form method="post" class="form-horizontal js-ajax-form margin-top-20" action="{:url('shop/edit')}">
+			<input type="hidden" name="id" value="{$shop.id}">
+			<div class="form-group">
+				<label for="input-sch_shopkeeper" class="col-sm-2 control-label"><span class="form-required">*</span>所属商户</label>
+				<div class="col-md-6 col-sm-10" style="height: 34px;">
+                    <input type="text" id="input-sch_shopkeeper" class="form-control" placeholder="输入手机号码" value="{$shop.user_login}({$shop.shopkeeper_id})"> &nbsp;
+                    <input type="hidden" id="shopkeeper_id" name="shopkeeper_id" value="{$shop.shopkeeper_id}">
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label for="input-type" class="col-sm-2 control-label"><span class="form-required">*</span>店铺类型</label>
+				<div class="col-md-6 col-sm-10">
+					<select class="form-control" id="input-type" name="type">
+                        <option value="shop_type_jd" <if condition="$shop.type == 'shop_type_jd'">selected</if>>京东</option>
+						<option value="shop_type_tb" <if condition="$shop.type == 'shop_type_tb'">selected</if>>淘宝</option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="input-name" class="col-sm-2 control-label"><span class="form-required">*</span>店铺名</label>
+				<div class="col-md-6 col-sm-10">
+					<input type="text" class="form-control" id="input-name" name="name" value="{$shop.name}">
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="input-trademanager" class="col-sm-2 control-label"><span class="form-required">*</span>旺旺号</label>
+				<div class="col-md-6 col-sm-10">
+					<input type="text" class="form-control" id="input-trademanager" name="trademanager" value="{$shop.trademanager}">
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="input-link" class="col-sm-2 control-label"><span class="form-required">*</span>店铺链接</label>
+				<div class="col-md-6 col-sm-10">
+					<input type="text" class="form-control" id="input-link" name="link" value="{$shop.link}">
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-offset-2 col-sm-10">
+					<button type="submit" class="btn btn-primary js-ajax-submit">{:lang('EDIT')}</button>
+				</div>
+			</div>
+		</form>
+	</div>
+	<script src="__STATIC__/js/admin.js"></script>
+    <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+</body>
+<script>
+    var sch_shopkeeper_id = 0;
+    $(function(){
+        var insertOptions = function(data, id) {
+            var source = new Array();
+            $.each(data, function(i, item){
+                source.push({id:item.id,value:item.user_login + '('+(item.id)+')'});
+            });
+            $('#'+id).autocomplete({
+                source: source,
+                select: function( event, ui) {
+                    $('#shopkeeper_id').val(ui.item.id);
+                },
+                change:function( event, ui) {
+                    $('#shopkeeper_id').val(ui.item.id);
+                }
+            })
+        }
+
+        insertOptions({$lists}, "input-sch_shopkeeper");
+    });
+</script>
+</html>

@@ -1,0 +1,90 @@
+<include file="public@header"/>
+<style type="text/css">
+    .pic-list li {
+        margin-bottom: 5px;
+    }
+</style>
+<script type="text/html" id="photos-item-tpl">
+    <li id="saved-image{id}">
+        <input id="photo-{id}" type="hidden" name="photo_urls[]" value="{filepath}">
+        <input class="form-control" id="photo-{id}-name" type="text" name="photo_names[]" value="{name}"
+               style="width: 200px;" title="图片名称">
+        <img id="photo-{id}-preview" src="{url}" style="height:36px;width: 36px;"
+             onclick="imagePreviewDialog(this.src);">
+        <a href="javascript:uploadOneImage('图片上传','#photo-{id}');">替换</a>
+        <a href="javascript:(function(){$('#saved-image{id}').remove();})();">移除</a>
+    </li>
+</script>
+<script type="text/html" id="files-item-tpl">
+    <li id="saved-file{id}">
+        <input id="file-{id}" type="hidden" name="file_urls[]" value="{filepath}">
+        <input class="form-control" id="file-{id}-name" type="text" name="file_names[]" value="{name}"
+               style="width: 200px;" title="文件名称">
+        <a id="file-{id}-preview" href="{preview_url}" target="_blank">下载</a>
+        <a href="javascript:uploadOne('文件上传','#file-{id}','file');">替换</a>
+        <a href="javascript:(function(){$('#saved-file{id}').remove();})();">移除</a>
+    </li>
+</script>
+</head>
+<body>
+<div class="wrap js-check-wrap">
+
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-bordered">
+                    <tr>
+                        <th>商户名称</th>
+                        <td>
+                            {$shoper.user_login}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>余额</th>
+                        <td>
+                            {$shoper.money}
+                            <input type="hidden" name="money" id="money" value="{$shoper.money}">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>充值金额<span class="form-required">*</span></th>
+                        <td>
+                            <input class="form-control" type="text" name="add_money"
+                                   id="add_money" required value="" placeholder="请输入金额"/>
+                            <input type="hidden" name="id" id="shopkeer_id" value="{$shoper.shopkeeper_id}">
+                            <input type="hidden" name="user_id" id="user_id" value="{$shoper.user_id}">
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th>备注<span class="form-required">*</span></th>
+                        <td>
+                            <select name="cash_explain" id="cash_explain">
+                                <option value="1">充值</option>
+                                <option value="2">退款</option>
+                                <option value="3">返点</option>
+                            </select>
+                        </td>
+                    </tr>
+
+                </table>
+
+            </div>
+        </div>
+
+</div>
+
+<script>
+    function getAuditData() {
+        var data = new Array();
+        data.id = $('#shopkeer_id').val();
+        data.money = $('#money').val();
+        data.add_money = $('#add_money').val();
+        data.user_id = $('#user_id').val();
+        data.cash_explain = $('#cash_explain').val();
+        return data;
+    }
+</script>
+<script type="text/javascript" src="__STATIC__/js/admin.js"></script>
+
+</body>
+</html>

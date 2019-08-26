@@ -1,0 +1,13 @@
+{
+  "name": "文章页",
+  "action": "portal/Article/index",
+  "description": "文章模板文件",
+  "order": 10.0,
+  "more": {
+    "vars": {
+
+    },
+    "widgets":{
+    }
+  }
+}

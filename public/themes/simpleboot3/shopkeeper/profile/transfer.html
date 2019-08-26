@@ -1,0 +1,189 @@
+<style>
+    body, ul, ol, li, p, h1, h2, h3, h4, h5, h6, form, fieldset, table, td, img, div {
+        margin: 0;
+        padding: 0;
+        border: 0;
+        background: #ffffff;
+    }
+
+    body {
+        font-size: 12px;
+        font-family: "Microsoft YaHei"
+    }
+
+    #nav{height:36px;width: 100%; border-bottom: solid 1px #e3e3e3;}
+
+    #nav a{display:block;width: 100px; height:35px;line-height:35px;font-size:15px;text-align:center;float:left;
+        background-color:#ffffff;cursor:pointer; color: #555555;box-sizing: border-box;font-weight: bold;border:solid 1px #e3e3e3;
+        margin-right: 25px;border-top-left-radius: 7px;border-top-right-radius: 7px;border-bottom: none;}
+    #nav a.on{background: #4A92FF;color: #ffffff;border:solid 1px #4A92FF;}
+    #contentBox {
+        width: 100%;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+    }
+
+    #contentBox .box {
+        display: none;
+        box-sizing: border-box;
+        padding: 0.1rem;
+    }
+
+    #contentBox .box.active {
+        display: block;
+        box-sizing: border-box;
+    }
+
+    #contentBox .box ul li img {
+        width: 100%;
+        height: 4rem;
+    }
+
+    #contentBox .box ul li p {
+        margin-top: -0.65rem
+    }
+
+    #contentBox .box ul li {
+        width: 100%;
+        color: #fe7e2f;
+        font-size: 0.3rem;
+        line-height: 0.8rem;
+        margin-bottom: 0.3rem;
+        font-weight: bold;
+    }
+
+    #contentBox .box ul li:last-child {
+        margin-bottom: 0;
+    }
+
+    .table {
+        width: 100%;
+    }
+
+    .table th {
+        border: solid 1px #d4d4d4;
+    }
+
+    .table tr {
+        height: 0.5rem;
+        line-height: 0.5rem;
+    }
+
+    body {
+        margin: 0;
+        padding: 0;
+    }
+
+    .d_form {
+        width: 100%;
+        min-height: 70px;
+        background: #ffffff;
+        padding: 30px 0 50px 0;
+    }
+
+    .d_form label {
+        width: 200px;
+        text-align: right;
+        display: inline-block;
+    }
+
+    .d_in {
+        height: 50px;
+        line-height: 50px;
+    }
+
+    select {
+        width: 300px;
+        height: 30px;
+        border: solid 1px #9f9f9f;
+        border-radius: 5px;
+    }
+
+    input {
+        width: 300px;
+        height: 30px;
+        border: solid 1px #9f9f9f;
+        border-radius: 5px;
+        padding-left: 10px;
+        box-sizing: border-box;
+    }
+
+    .input1 {
+        width: 15px;
+        height: 15px;
+    }
+
+    .btn_add {
+        display: inline-block;
+        width: 100px;
+        height: 30px;
+        line-height: 30px;
+        text-align: center;
+        text-decoration: none;
+        border: none;
+        border-radius: 5px;
+        background: #fe0000;
+        color: #FFFFFF;
+    }
+
+    label {
+        font-weight: normal;
+        font-size: 18px;
+    }
+
+    .save {
+        width: 130px;
+        height: 35px;
+        line-height: 35px;
+        text-align: center;
+        border: none;
+        border-radius: 5px;
+        background: #fe0000;
+        color: #ffffff;
+        margin-left: 285px;
+        font-size: 14px;
+    }
+
+    a {
+        text-decoration: none;
+    }
+
+</style>
+
+<div class="tab">
+    <nav id="nav">
+        <a href="{:url('profile/index')}">个人信息</a>
+        <a href="{:url('profile/pass')}">密码修改</a>
+        <a class="on">转账管理</a>
+        <a href="{:url('profile/recharge')}">充值</a>
+    </nav>
+    <div id="contentBox">
+        <div class="box active">
+            <div class="d_form">
+                <form action="{:url('profile/transfer')}" method="post">
+                    <div class="d_in">
+                        <label>支付宝账号：</label>
+                        <input type="text" id="input-alipay_no" name="alipay_no" value="{$user.alipay_no}">
+                    </div>
+                    <div class="d_in">
+                        <label>支付宝用户名：</label>
+                        <input type="text" id="input-alipay_ower" name="alipay_ower" value="{$user.alipay_ower}">
+                    </div>
+                    <div class="d_in">
+                        <label>银行卡账号：</label>
+                        <input type="text" id="input-bank_no" name="bank_no" value="{$user.bank_no}">
+                    </div>
+                    <div class="d_in">
+                        <label>开户行：</label>
+                        <input type="text" id="input-bank_addr" name="bank_addr" value="{$user.bank_addr}">
+                    </div>
+                    <div class="d_in">
+                        <label>持卡者姓名：</label>
+                        <input type="text" id="input-bank_ower" name="bank_ower" value="{$user.bank_ower}">
+                    </div>
+                    <button class="save" type="submit">保存</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

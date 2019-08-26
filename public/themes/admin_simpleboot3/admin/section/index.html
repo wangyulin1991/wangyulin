@@ -1,0 +1,67 @@
+<include file="public@header" />
+</head>
+<body>
+	<div class="wrap js-check-wrap">
+		<ul class="nav nav-tabs">
+			<li class="active"><a>分管列表</a></li>
+			<li><a href="{:url('section/add')}">添加分站</a></li>
+		</ul>
+        <form class="well form-inline margin-top-20" method="get" action="{:url('section/index')}">
+            分站名称:
+            <input type="text" class="form-control" name="name" style="width: 120px;" value="{$name|default=''}">
+            &nbsp;&nbsp;分站账号:
+            <input type="text" class="form-control" name="user_login" style="width: 120px;" value="{$user_login|default=''}">
+            &nbsp;&nbsp;分站联系人姓名:
+            <input type="text" class="form-control" name="user_nickname" style="width: 120px;" value="{$user_nickname|default=''}">
+            &nbsp;&nbsp;电话号码:
+            <input type="text" class="form-control" name="mobile" style="width: 120px;" value="{$mobile|default=''}">
+            &nbsp;&nbsp;注册时间:
+            <input type="text" class="form-control js-bootstrap-date" name="start_time" value="{$start_time|default=''}" style="width: 140px;" autocomplete="off">-
+            <input type="text" class="form-control js-bootstrap-date" name="end_time" value="{$end_time|default=''}" style="width: 140px;" autocomplete="off">
+            &nbsp;&nbsp;登录时间:
+            <input type="text" class="form-control js-bootstrap-date" name="login_start_time" value="{$login_start_time|default=''}" style="width: 140px;" autocomplete="off">-
+            <input type="text" class="form-control js-bootstrap-date" name="login_end_time" value="{$login_end_time|default=''}" style="width: 140px;" autocomplete="off">
+            <a class="btn btn-danger" href="{:url('section/index')}">清空</a>
+            &nbsp;<input type="submit" class="btn btn-primary" value="搜索" />
+        </form>
+		<table class="table table-hover table-bordered">
+			<thead>
+				<tr>
+					<th width="50">ID</th>
+                    <th>分站名称</th>
+                    <th>分站账号</th>
+                    <!--<th>分站密码</th-->>
+                    <th>分站联系人姓名</th>
+                    <th>分站电话号码</th>
+                    <th>注册时间</th>
+                    <th>最后登录时间</th>
+                    <th>分站缴费金额</th>
+                    <th>分开邀请人数</th>
+                    <th>分站充值金额</th>
+                    <th width="140">{:lang('ACTIONS')}</th>
+                </tr>
+            </thead>
+            <tbody>
+            <foreach name="$lists" item="vo">
+                <tr>
+                    <td>{$vo.id}</td>
+                    <td>{$vo.name}</td>
+                    <td>{$vo.user_login}</td>
+                    <!--<td>{$vo.user_pass}</td>-->
+                    <td>{$vo.user_nickname}</td>
+                    <td>{$vo.mobile}</td>
+                    <td>{:date('Y-m-d H:i:s',$vo.create_time)}</td>
+                    <td>{:date('Y-m-d H:i:s',$vo.last_login_time)}</td>
+                    <td>{$vo.payment}</td>
+                    <td>{$vo.invite_count}</td>
+                    <td>{$vo.recharge_money}</td>
+                    <td></td>
+                </tr>
+            </foreach>
+			</tbody>
+		</table>
+        <ul class="pagination">{$page|default=''}</ul>
+	</div>
+	<script src="__STATIC__/js/admin.js"></script>
+</body>
+</html>

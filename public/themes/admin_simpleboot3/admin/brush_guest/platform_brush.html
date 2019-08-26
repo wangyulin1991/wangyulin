@@ -1,0 +1,140 @@
+<include file="public@header" />
+</head>
+<body>
+<div class="wrap js-check-wrap">
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="{:url('BrushGuest/auditList')}">平台买手列表</a></li>
+    </ul>
+    <form class="well form-inline margin-top-20" method="get" action="{:url('BrushGuest/platformBrush')}">
+        <div class="form-group">
+            <label for="start_time">注册时间:</label>
+            <input type="text" class="form-control js-bootstrap-datetime" id="start_time" name="start_time" value="{$start_time|default=''}" style="width: 150px;" autocomplete="off">-
+            <input type="text" class="form-control js-bootstrap-datetime" id="end_time" name="end_time" value="{$end_time|default=''}" style="width: 150px;" autocomplete="off">
+        </div>
+        <div class="form-group">
+            <label for="cellphone">手机号码:</label>
+            <input type="text" class="form-control" id="cellphone" name="cellphone" style="width: 120px;" value="{:input('request.cellphone/s','')}" placeholder="请输入{:lang('MOBILE')}">
+        </div>
+        <div class="form-group">
+            <label for="qq">QQ:</label>
+            <input type="text" class="form-control" id="qq" name="qq" style="width: 120px;" value="{:input('request.qq/s','')}" placeholder="请输入手机号">
+        </div>
+        <div class="form-group">
+            <label for="qq">平台:</label>
+            <select name="id_platform" class="form-control">
+                <option value="">请选择</option>
+                <option value="1" <if condition="input('request.id_platform/s','') eq 1">selected</if> >京东</option>
+                <option value='2' <if condition="input('request.id_platform/s','') eq 2">selected</if> >天猫/淘宝</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <input type="submit" class="btn btn-primary" value="搜索" />
+            <a class="btn btn-danger" href="{:url('BrushGuest/platformBrush')}">清空</a>
+        </div>
+        &nbsp;
+    </form>
+    <table class="table table-hover table-bordered table-list" id="menus-table">
+        <thead>
+        <tr>
+            <th width="50">ID</th>
+            <th>真实姓名</th>
+            <th>性别</th>
+            <th>手机号码</th>
+            <th>QQ</th>
+            <th>认证平台</th>
+            <th>创建时间</th>
+<!--            <th>操作</th>-->
+        </tr>
+        </thead>
+        <tbody>
+        <volist name="brush_guests" id="brush_guest">
+            <tr>
+                <td>{$brush_guest.id}</td>
+                <td>{$brush_guest.real_name}</td>
+                <td>
+                    <if condition="$brush_guest.gender eq 1">
+                        男
+                        <else/>
+                        女
+                    </if>
+                </td>
+                <td>{$brush_guest.cellphone}</td>
+                <td>{$brush_guest.qq}</td>
+                <td>{$brush_guest.platform_name}</td>
+                <td>{:date('Y-m-d H:i:s',$brush_guest.create_time)}</td>
+<!--                <td>-->
+<!--                    <a class="btn btn-xs btn-primary viewDetail" href="javascript:void (0)" data-did="{$brush_guest.id}" data-pid="{$brush_guest.id_platform}">认证</a>-->
+<!--                </td>-->
+            </tr>
+        </volist>
+        </tbody>
+        <tfoot>
+        <tr>
+            <th width="50">ID</th>
+            <th>真实姓名</th>
+            <th>性别</th>
+            <th>手机号码</th>
+            <th>QQ</th>
+            <th>认证平台</th>
+            <th>创建时间</th>
+<!--            <th>操作</th>-->
+        </tr>
+        </tfoot>
+    </table>
+    <div class="table-actions">
+        综合统计：当前页{$nowTotal}个买手
+    </div>
+    <ul class="pagination">{$page|default=''}</ul>
+</div>
+<script src="__STATIC__/js/admin.js"></script>
+<script>
+    $(document).ready(function() {
+        $('.viewDetail').on('click',function () {
+            var auditId = $(this).data('did');
+            var pid = $(this).data('pid');
+            console.log(auditId);
+            console.log(pid);
+            openIframeLayer("{:url('BrushGuest/platformauthDetail')}?id=" + auditId +'&pid='+pid, '买手认证信息', {
+                area: ['1000px', '700px'],
+                btn: ['通过', '拒绝'],
+                btnAlign:'c',
+                yes: function (index, layero) {
+                    //do something
+                    var iframeWin  = window[layero.find('iframe')[0]['name']];
+                    var data = iframeWin.getAuditData();
+                    $.post('{:url("BrushGuest/auth")}',{id:data.id,platform_status:1,id_platform:data.id_platform},function (res) {
+                        if (res.code==200) {
+                            layer.close(index); //如果设定了yes回调，需进行手工关闭
+                            window.location='{:url("BrushGuest/platformAuth")}'
+                        }
+                    },'json');
+
+                },
+                btn2: function (index, layero) {
+                    var iframeWin = window[layero.find('iframe')[0]['name']];
+                    var data = iframeWin.getAuditData();
+                    $.post('{:url("BrushGuest/auth")}',{id:data.id,platform_status:2,platform_remarks:data.platform_remarks,id_platform:data.id_platform},function (res) {
+                        if (res.code==200) {
+                            layer.close(index); //如果设定了yes回调，需进行手工关闭
+                            window.location='{:url("BrushGuest/platformAuth")}'
+                        } else {
+                            iframeWin.onfusRemarks();
+                            layer.open({
+                                title: '信息提示'
+                                ,content: res.msg
+                                ,btn: ['确定'],
+                                yes: function (index, layero) {
+                                    iframeWin.onfusRemarks();
+                                    layer.close(index);
+                                }
+                            });
+                        }
+                    },'json');
+                    return false;
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

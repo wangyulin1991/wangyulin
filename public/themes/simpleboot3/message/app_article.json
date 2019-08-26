@@ -1,0 +1,13 @@
+{
+  "name": "消息页",
+  "action": "message/Article/index",
+  "description": "消息模板文件",
+  "order": 10.0,
+  "more": {
+    "vars": {
+
+    },
+    "widgets":{
+    }
+  }
+}

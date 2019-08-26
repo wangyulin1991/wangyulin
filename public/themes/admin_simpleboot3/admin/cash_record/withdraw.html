@@ -1,0 +1,88 @@
+<include file="public@header" />
+</head>
+<body>
+	<div class="wrap js-check-wrap">
+		<ul class="nav nav-tabs">
+			<li class="active"><a>提现记录</a></li>
+			<!--<li><a href="{:url('shopkeeper/add')}">添加商家</a></li>-->
+		</ul>
+        <form class="well form-inline margin-top-20" method="get" action="{:url('cashRecord/withdraw')}">
+            订单状态:
+            <select class="form-control" id="input-status" name="status">
+                <option value="">全部状态</option>
+                <option value="1" <if condition="$status === '1'">selected</if>>已到账</option>
+                <option value="0" <if condition="$status === '0'">selected</if>>未到账</option>
+            </select>
+            用户关键字:
+            <input type="text" class="form-control" name="keyword" value="{$keyword}" placeholder="请输入账号/手机/QQ">
+            姓名:
+            <input type="text" class="form-control" name="real_name" value="{$real_name}" placeholder="请输入姓名">
+            提现时间:
+            <input type="text" class="form-control js-bootstrap-date" name="start_time" value="{$start_time|default=''}" autocomplete="off"> -
+            <input type="text" class="form-control js-bootstrap-date" name="end_time" value="{$end_time|default=''}" autocomplete="off">
+            <input type="submit" class="btn btn-primary" value="搜索" />
+            <a class="btn btn-danger" href="{:url('cashRecord/withdraw')}">清空</a>
+        </form>
+		<table class="table table-hover table-bordered">
+			<thead>
+				<tr>
+					<th width="50">ID</th>
+                    <th>订单编号</th>
+                    <th>用户账号</th>
+                    <th>提现金额</th>
+                    <th>用户QQ</th>
+                    <th>提现时间</th>
+                    <!--<th>到账时间</th>-->
+                    <th>用户余额</th>
+                    <th>状态</th>
+                    <th width="140">{:lang('ACTIONS')}</th>
+                </tr>
+            </thead>
+            <tbody>
+            <foreach name="lists" item="vo" index="groupIndex">
+                <tr>
+                    <td>{$vo.id}</td>
+                    <td>{$vo.order_no}</td>
+                    <td>{$vo.user_login}</td>
+                    <td>{$vo.money}</td>
+                    <td>{$vo.qq}</td>
+                    <td>{:date('Y-m-d H:i:s',$vo.create_time)}</td>
+                    <!--<td>{:date('Y-m-d H:i:s',$vo.transferred_time)}</td>-->
+                    <td>{$vo.money}</td>
+                    <td>{:get_codes($vo.status, ['未到账', '已到账','待确认'])}</td>
+                    <td>
+                        <!--<a class="btn btn-xs btn-primary" href="{:url('cashRecord/drawResult')}?id={$vo.id}">查看</a>-->
+                        <a class="btn btn-xs btn-primary viewDetail" href="javascript:void (0)" data-cid="{$vo.id}">查询</a>
+                        <if condition="$vo.status !== 1">
+                            <a class="btn btn-xs btn-danger js-ajax-dialog-btn" href="{:url('CashRecord/again_withdraw',array('id'=>$vo['id']))}" data-msg="{:lang('确定手动提现？')}">手动提现</a>
+                        </if>
+                    </td>
+                </tr>
+
+            </foreach>
+			</tbody>
+		</table>
+        <div class="table-actions">
+            综合统计：本页共{$total}条记录
+        </div>
+        <ul class="pagination">{$page|default=''}</ul>
+	</div>
+	<script src="__STATIC__/js/admin.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('.viewDetail').on('click',function () {
+                var Cid = $(this).data('cid');
+                console.log(Cid);
+                openIframeLayer("{:url('CashRecord/drawResult')}?id=" + Cid, '提现信息', {
+                    area: ['800px', '500px'],
+                    //btn: ['通过', '拒绝'],
+                    btnAlign:'c',
+                    yes: function (index, layero) {
+                        //do something
+                    },
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<include file="public@header" />
+</head>
+<body>
+	<div class="wrap">
+		<ul class="nav nav-tabs">
+			<li><a href="{:url('section/index')}">分管列表</a></li>
+			<li class="active"><a>添加分站</a></li>
+		</ul>
+		<form method="post" class="form-horizontal js-ajax-form margin-top-20" action="{:url('section/add')}">
+			<input type="hidden" name="id" value="{$section.id}">
+			<div class="form-group">
+				<label for="input-name" class="col-sm-2 control-label"><span class="form-required">*</span>分站名称</label>
+				<div class="col-md-6 col-sm-10">
+					<input type="text" class="form-control" id="input-name" name="name" value="{$section.name}">
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="input-user_login" class="col-sm-2 control-label"><span class="form-required">*</span>分站账号</label>
+				<div class="col-md-6 col-sm-10">
+					<input type="text" class="form-control" id="input-user_login" name="user_login" value="{$section.user_login}">
+				</div>
+			</div>
+			<!--<div class="form-group">
+				<label for="input-product_link" class="col-sm-2 control-label"><span class="form-required">*</span>分站密码</label>
+				<div class="col-md-6 col-sm-10">
+					<input type="text" class="form-control" id="input-product_link" name="product_link" value="{$section.product_link}">
+				</div>
+			</div>-->
+			<div class="form-group">
+				<label for="input-user_name" class="col-sm-2 control-label"><span class="form-required">*</span>分站联系人姓名</label>
+				<div class="col-md-6 col-sm-10">
+					<input type="text" class="form-control" id="input-user_name" name="user_name" value="{$section.user_name}">
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="input-mobile" class="col-sm-2 control-label"><span class="form-required">*</span>分站电话号码</label>
+				<div class="col-md-6 col-sm-10">
+					<input type="text" class="form-control" id="input-mobile" name="mobile" value="{$section.mobile}">
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="input-bank_no" class="col-sm-2 control-label"><span class="form-required">*</span>分站银行卡</label>
+				<div class="col-md-6 col-sm-10">
+					<input type="text" class="form-control" id="input-bank_no" name="bank_no" value="{$section.bank_no}">
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-offset-2 col-sm-10">
+					<button type="submit" class="btn btn-primary js-ajax-submit">保存</button>
+				</div>
+			</div>
+		</form>
+	</div>
+	<script src="__STATIC__/js/admin.js"></script>
+</body>
+</html>

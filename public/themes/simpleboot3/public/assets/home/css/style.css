@@ -1,0 +1,13 @@
+body, ul, li, ol, li, dl, dt, dd, form, h1, h2, h3, h4, p, div, hr, table, tr, td, select, option, br, span, img, a, label, form, input, textarea, em, i, strong, b {
+    margin: 0;
+    padding: 0;
+}
+ul { list-style: none;}
+a { text-decoration: none;}
+em,i { font-style: normal;}
+h1,h2,h3,h4,h5,b,strong { font-weight: normal;}
+input,textarea { outline: none; resize: none; border: 0; background: none;}
+*{
+    font-size:14px;
+}
+a,a:hover{ text-decoration:none; color:#333}

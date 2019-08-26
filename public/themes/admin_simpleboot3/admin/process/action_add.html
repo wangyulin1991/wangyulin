@@ -1,0 +1,77 @@
+<include file="public@header" />
+</head>
+<body>
+<div class="wrap">
+    <ul class="nav nav-tabs">
+        <li><a href="{:url('Process/actionIndex')}">动作列表</a></li>
+        <li class="active"><a href="javascript:void(0)">添加动作</a></li>
+    </ul>
+    <form method="post" class="form-horizontal js-ajax-form margin-top-20" action="{:url('Process/actionAdd')}">
+        <div class="form-group">
+            <label for="input-action_name" class="col-sm-2 control-label"><span class="form-required">*</span>名称</label>
+            <div class="col-md-6 col-sm-10">
+                <input type="text" class="form-control" id="input-action_name" name="action_name">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="input-step_type" class="col-sm-2 control-label"><span class="form-required">*</span>类型</label>
+            <div class="col-md-6 col-sm-10">
+                <select id="input-step_type" class="form-control" name="action_type">
+                    <option value="0">请选择</option>
+                    <volist name="types" id="type">
+                        <option value="{$type}">{$type}</option>
+                    </volist>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="input-status" class="col-sm-2 control-label"><span class="form-required">*</span>状态</label>
+            <div class="col-md-6 col-sm-10">
+                <select class="form-control" name="status" id="input-status">
+                    <option value="0">否</option>
+                    <option value="1">是</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="input-status" class="col-sm-2 control-label"><span class="form-required">*</span>提交内容</label>
+            <div class="col-md-6 col-sm-10">
+                <table class="table table-hover table-bordered" id="action-input">
+                    <thead>
+                        <tr>
+                            <th>参数名</th>
+                            <th>名称</th>
+                            <th>类型</th>
+                            <th>提示</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+                <input type="button" class="form-control btn-primary" value="添加" id="addInput">
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-primary js-ajax-submit">{:lang('ADD')}</button>
+            </div>
+        </div>
+    </form>
+</div>
+<script src="__STATIC__/js/admin.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#addInput').on('click',function () {
+            var index = $('#addInput tbody tr').length;
+            var html = '<tr>';
+            html += '<td><input name="action_input[' + index + '][param_name]" value=""> </td>';
+            html += '<td><input name="action_input[' + index + '][input_type_name]" value=""> </td>';
+            html += '<td><select name="action_input[' + index + '][input_type]"><option value="image">上传图片</option><option value="input">输入框</option></select></td>';
+            html += '<td><input name="action_input[' + index + '][input_type_info]" value=""> </td>';
+            html += '</tr>';
+            $('table tbody').append(html);
+        });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>商户后台管理中心</title>
+    <meta name="keywords" content=""/>
+    <meta name="description" content="">
+    <include file="public@head"/>
+    <link href="__TMPL__/public/assets/simpleboot3/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <!--<script src="js/jquery.js" type="text/javascript"></script>-->
+    <link href="__TMPL__/public/assets/css/base.css" rel="stylesheet" type="text/css">
+    <link href="__TMPL__/public/assets/css/index.css" rel="stylesheet" type="text/css">
+    <script src="__TMPL__/public/assets/js/jquery-1.10.2.min.js"></script>
+    <style>
+        .lay_top{width: 100%;height: 120px;background: url("__TMPL__/public/assets/home/images/top_bg.jpg") no-repeat;background-size: 100% 100%;}
+        .active .menu_name{background: url("__TMPL__/public/assets/home/images/bg_menu.png") no-repeat;background-size: 100% 100%;color: #ffffff;border-bottom: none!important;}
+        .line2{width: 100%;height: 3px;background: url("__TMPL__/public/assets/home/images/line2.png") no-repeat;background-size: 100% 100%;}
+    </style>
+    <script>
+
+        window.onload= function(){
+            $(".menu_children li").click(function(){
+                $(this).addClass("selected").siblings("li").removeClass("selected");
+            });
+
+            $('.menu_name').on('click',function(){
+
+                $('.menu_parent').removeClass('active');
+                $('.i').removeClass('fa-angle-down').addClass('fa-angle-right');
+                if($(this).next().css('display')=='none'){
+                    $('.menu_parent .menu_children').hide();
+                    $('.menu_parent').removeClass('active');
+                    $('.menu_name').css('border-bottom','solid 1px #e3e3e3');
+                    $(this).find('.fa-angle-down').removeClass('fa-angle-down').addClass('fa-angle-right');
+                }
+                $(this).next().toggle();
+                $(this).parent().addClass('active');
+                $(this).parent().prev().children(".menu_name").css('border-bottom','none');
+
+                $(this).find('.i').removeClass('fa-angle-right').addClass('fa-angle-down');
+                if($(this).next().css('display')=='none'){
+                    $(this).find('.i').removeClass('fa-angle-down').addClass('fa-angle-right');
+                }
+
+            });
+
+            $("#nav a").off("click").on("click",function(){
+                var index = $(this).index();
+                $(this).addClass("on").siblings().removeClass("on");
+                $("#contentBox .box").eq(index).addClass("active").siblings().removeClass("active");
+            });
+            refresh();
+            setInterval(refresh,100)
+        };
+
+        //获取子页面的高度
+        function refresh(){
+            var childPageH = $('#iframe').contents().find('body').height();
+            $('#iframe').height(childPageH);
+        }
+        function changMenu(url){
+            $("#iframe").attr("src", url);
+
+        }
+
+        function toWhite(){
+            document.getElementById('s_img').src='__TMPL__/public/assets/home/images/out2.png';
+            document.getElementById('s_p').style.color='#ffffff';
+        }
+        function togrey(){
+            document.getElementById('s_img').src='__TMPL__/public/assets/home/images/out1.png';
+            document.getElementById('s_p').style.color='#9cc4ff';
+        }
+        function signout(){
+            //alert("退出登录");
+            window.location.href="{:cmf_url('shopkeeper/public/logout')}";
+        }
+
+    </script>
+
+
+</head>
+<body>
+<div class="lay_top">
+    <div class="t_center">
+        <php>$user=cmf_get_current_user();</php>
+        <div class="tc_left p20">
+            <empty name="$user.avatar">
+                <img src="__TMPL__/public/assets/home/images/toux.jpg">
+            <else/>
+                <img src="{:cmf_get_image_url($user.avatar)}">
+            </empty>
+            <p id="nickname">{$user['user_nickname']}</p>
+            <p>{$user['mobile']}</p>
+        </div>
+
+        <div class="tc_right p20">
+            <div class="d_p">
+                <p>上次登录</p>
+                <p>日期：{:date('Y-m-d',$user.last_login_time)}</p>
+                <p>时间：{:date('H:i:s',$user.last_login_time)}</p>
+            </div>
+
+            <div class="sign_out mt10" onmouseover="toWhite()" onmouseout="togrey()" onclick="signout()">
+                <img id="s_img" src="__TMPL__/public/assets/home/images/out1.png">
+                <p id="s_p" class="p3">退出系统</p>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="lay_center">
+    <div class="lay_left mr20">
+        <!--菜单-->
+        <div class="line2"></div>
+        <div class="d_nav p5">
+            <ul id="ul">
+                <li class="menu_parent active">
+                    <span class="menu_name" onclick="changMenu('{:url(\'shopkeeper/Main/index\')}')">
+                        <div style="width: 20%;position: absolute;left: 20px;"> <i class="fa fa-home"></i></div>
+                       首页
+                    </span>
+
+                </li>
+                <li class="menu_parent">
+                    <span class="menu_name">
+                            <div style="width: 20%;position: absolute;left: 20px;"> <i class="fa fa-tasks"></i></div>
+                        任务管理
+                       <div style="width: 20%;position: absolute;right: 10px;top: 0;"><i class="fa fa-angle-right i"></i></div>
+                    </span>
+                    <ul class="menu_children">
+                        <li onclick="changMenu('{:url(\'shopkeeper/task/add_first\')}')">发布任务</li>
+                        <li onclick="changMenu('{:url(\'shopkeeper/task/draft\')}')">任务草稿</li>
+                        <li onclick="changMenu('{:url(\'shopkeeper/task/index\')}')">进行中的任务</li>
+                        <li onclick="changMenu('{:url(\'shopkeeper/task/audit\')}')">待审核的任务</li>
+                        <li onclick="changMenu('{:url(\'shopkeeper/task/reject\')}')">拒绝的任务</li>
+                        <li onclick="changMenu('{:url(\'shopkeeper/task/his_index\')}')">任务查询</li>
+                    </ul>
+                </li>
+                <li class="menu_parent">
+                    <span class="menu_name">
+                            <div style="width: 20%;position: absolute;left: 20px;"> <i class="fa fa-money"></i></div>
+                        资金管理
+                       <div style="width: 20%;position: absolute;right: 10px;top: 0;"><i class="fa fa-angle-right i"></i></div>
+                    </span>
+                    <ul class="menu_children">
+                        <li onclick="changMenu('{:url(\'shopkeeper/cashRecord/recharge\')}')">充值记录</li>
+                        <li onclick="changMenu('{:url(\'shopkeeper/cashRecord/index\')}')">资金账目</li>
+                    </ul>
+                </li>
+                <li class="menu_parent">
+                   <span class="menu_name">
+                        <div style="width: 20%;position: absolute;left: 20px;"><i class="fa fa-bars" aria-hidden="true"></i></div>
+                       订单管理
+                        <div style="width: 20%;position: absolute;right: 10px;top: 0;"><i class="fa fa-angle-right i"></i></div>
+                    </span>
+                    <ul class="menu_children">
+                        <li onclick="changMenu('{:url(\'shopkeeper/grabTask/ing_index\')}')">进行中的订单</li>
+                        <!--<li onclick="changMenu('{:url(\'shopkeeper/grabTask/ex_index\')}')">异常的订单</li>-->
+                        <li onclick="changMenu('{:url(\'shopkeeper/grabTask/appeal_index\')}')">申诉的订单</li>
+                        <li onclick="changMenu('{:url(\'shopkeeper/grabTask/appointment\')}')">预约的订单</li>
+                        <li onclick="changMenu('{:url(\'shopkeeper/grabTask/index\')}')">订单查询</li>
+                    </ul>
+                </li>
+                <li class="menu_parent">
+                    <span class="menu_name">
+                        <div style="width: 20%;position: absolute;left: 20px;"><i class="fa fa-bandcamp" aria-hidden="true"></i></div>
+                       店铺管理
+                        <div style="width: 20%;position: absolute;right: 10px;top: 0;"><i class="fa fa-angle-right i"></i></div>
+                    </span>
+                    <ul class="menu_children">
+                        <li onclick="changMenu('{:url(\'shopkeeper/shop/add\')}')">添加店铺</li>
+                        <li onclick="changMenu('{:url(\'shopkeeper/shop/index\')}')">店铺列表</li>
+                    </ul>
+                </li>
+                <if condition="$is_rec.is_rec==1">
+                <li class="menu_parent">
+                    <span class="menu_name">
+                        <div style="width: 20%;position: absolute;left: 20px;"><i class="fa fa-bandcamp" aria-hidden="true"></i></div>
+                       推荐管理
+                        <div style="width: 20%;position: absolute;right: 10px;top: 0;"><i class="fa fa-angle-right i"></i></div>
+                    </span>
+                    <ul class="menu_children">
+                        <li onclick="changMenu('{:url(\'shopkeeper/recommend/add\')}')">添加商户</li>
+                        <li onclick="changMenu('{:url(\'shopkeeper/recommend/index\')}')">推荐商户列表</li>
+                        <li onclick="changMenu('{:url(\'shopkeeper/recommend/reMoneyList\')}')">推荐佣金</li>
+                    </ul>
+                </li>
+                </if>
+                <li class="menu_parent">
+                   <span class="menu_name" onclick="changMenu('{:url(\'shopkeeper/Profile/index\')}')">
+                        <div style="width: 20%;position: absolute;left: 20px;"><i class="fa fa-user-circle-o" aria-hidden="true"></i></div>
+                       个人中心
+                    </span>
+
+                </li>
+                <!--
+                <li class="menu_parent">
+                    <span class="menu_name">
+                            <div style="width: 20%;position: absolute;left: 20px;"><i class="fa fa-cog" aria-hidden="true"></i></div>
+                        店铺资料
+                       <div style="width: 20%;position: absolute;right: 10px;top: 0;"><i class="fa fa-angle-right i"></i></div>
+                    </span>
+                    <ul class="menu_children">
+                        <li>管理1</li>
+                        <li>管理2</li>
+                        <li>管理3</li>
+                    </ul>
+                </li>-->
+            </ul>
+
+        </div>
+    </div>
+
+    <!--右侧-->
+    <div class="lay_right">
+        <!--d_tab 面板部分 用户信息-->
+        <iframe id="iframe" src="{:url('Main/index')}" frameborder='0'
+                scrolling="no" style='border: 0; width: 100%; height: auto;'>
+        </iframe>
+
+    </div>
+</div>
+</body>
+</html>

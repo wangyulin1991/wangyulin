@@ -1,0 +1,69 @@
+<include file="public@header" />
+</head>
+<body>
+<div class="wrap js-check-wrap">
+  <ul class="nav nav-tabs">
+    <li class="active"><a href="{:url('Process/stepIndex',['pid'=>$pid])}">步骤列表</a></li>
+    <li><a href="{:url('Process/stepAdd',['pid'=>$pid])}">添加步骤</a></li>
+  </ul>
+  <form class="js-ajax-form" action="{:url('Menu/listOrder')}" method="post">
+    <div class="table-actions">
+      <button class="btn btn-primary btn-sm js-ajax-submit" type="submit">{:lang('SORT')}</button>
+    </div>
+    <table class="table table-hover table-bordered table-list" id="menus-table">
+      <thead>
+      <tr>
+        <th width="50">ID</th>
+        <th width="50">步骤顺序</th>
+        <th>步骤名称</th>
+        <th>步骤类型</th>
+        <th>第几天任务</th>
+        <th>状态</th>
+        <th>操作</th>
+      </tr>
+      </thead>
+      <tbody>
+      <volist name="steps" id="step">
+        <tr>
+          <td>{$step.id}</td>
+          <td>{$step.step_sort}</td>
+          <td>{$step.step_name}</td>
+          <td>{$step.action_name}</td>
+          <td>
+            <if condition="$step.do_day eq 0 ">
+              默认
+              <elseif condition="$step.do_day eq 1 ">
+                第一天
+                <elseif condition="$step.do_day eq 2 ">
+                  第二天
+                  <elseif condition="$step.do_day eq 3 ">
+                    第三天
+            </if>
+          </td>
+          <td>{$step.status?'开启':'关闭'}</td>
+          <td>
+            <a class="btn btn-xs btn-primary" href="{:url('Process/StepEdit', ['id' => $step['id']])}">{:lang('EDIT')}</a>
+            <a class="btn btn-xs btn-danger js-ajax-delete" href="{:url('Process/StepDelete', ['id' => $step['id']])}">{:lang('DELETE')}</a>
+          </td>
+        </tr>
+      </volist>
+      </tbody>
+    </table>
+    <div class="table-actions">
+      <button class="btn btn-primary btn-sm js-ajax-submit" type="submit">{:lang('SORT')}</button>
+    </div>
+  </form>
+</div>
+<script src="__STATIC__/js/admin.js"></script>
+<script>
+    $(document).ready(function() {
+        Wind.css('treeTable');
+        Wind.use('treeTable', function() {
+            $("#menus-table").treeTable({
+                indent : 20
+            });
+        });
+    });
+</script>
+</body>
+</html>

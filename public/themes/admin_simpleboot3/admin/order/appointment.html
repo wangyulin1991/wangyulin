@@ -1,0 +1,176 @@
+<include file="public@header" />
+</head>
+<body>
+<div class="wrap js-check-wrap">
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="{:url('Order/appointment')}">预约列表</a></li>
+    </ul>
+    <form class="well form-inline margin-top-20" method="get" action="{:url('Order/appointment')}">
+        <div class="form-group">
+            <label for="start_time">预约时间:</label>
+            <input type="text" class="form-control js-bootstrap-datetime" id="start_time" name="start_time" value="{$start_time|default=''}" style="width: 150px;" autocomplete="off">-
+            <input type="text" class="form-control js-bootstrap-datetime" id="end_time" name="end_time" value="{$end_time|default=''}" style="width: 150px;" autocomplete="off">
+        </div>
+
+        <div class="form-group">
+            <label for="task_no">任务编号:</label>
+            <input type="text" class="form-control" id="task_no" name="task_no" style="width: 120px;" value="{:input('request.task_no/s','')}" placeholder="请输入任务编号">
+        </div>
+
+        <div class="form-group">
+            <label for="mobile">商家手机:</label>
+            <input type="text" class="form-control" id="mobile" name="mobile" style="width: 120px;" value="{:input('request.mobile/s','')}" placeholder="请输入商家手机">
+        </div>
+        <div class="form-group">
+            <label for="cellphone">买手手机:</label>
+            <input type="text" class="form-control" id="cellphone" name="cellphone" style="width: 120px;" value="{:input('request.cellphone/s','')}" placeholder="请输入买手手机">
+        </div>
+        <div class="form-group">
+            <label for="status">订单状态:</label>
+            <select class="form-control" id="status" name="status">
+                <option value="-1">全部</option>
+                <option value="1" <if condition="$status === 1">selected</if> >已通过</option>
+                <option value="0" <if condition="$status === 0">selected</if> >已拒绝</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <input type="submit" class="btn btn-primary" value="搜索" />
+            <a class="btn btn-danger" href="{:url('Order/appointment')}">清空</a>
+        </div>
+        &nbsp;
+    </form>
+    <table class="table table-hover table-bordered table-list" id="menus-table">
+        <thead>
+        <tr>
+            <th width="50">ID</th>
+            <th>任务编号</th>
+            <th>淘宝旺旺</th>
+            <th>商家手机</th>
+            <th>买手姓名</th>
+            <th>买手手机</th>
+            <th>预约状态</th>
+            <th>订单ID</th>
+            <th>创建时间</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <volist name="orders" id="order">
+            <tr>
+                <td>{$order.id}</td>
+                <td>{$order.task_no}</td>
+                <td>{$order.taobao_ww}</td>
+                <td>{$order.mobile}</td>
+                <td>{$order.real_name}</td>
+                <td>{$order.cellphone}</td>
+                <td>
+                    <if condition="$order.status eq 1">
+                        已通过
+                        <elseif condition="$order.status eq 0"/>
+                        未通过
+                    </if>
+                </td>
+                <td>{$order.order_id}</td>
+                <td>{:date('Y-m-d H:i:s', $order.create_time)}</td>
+                <td>
+                    <if condition="$order.order_id neq 0">
+                        <a class="btn btn-xs btn-primary" href="{:url('Order/step_details', ['order_id' => $order['order_id']])}">步骤详情</a>
+                        <elseif condition="$order.order_id eq 0"/>
+                        <if condition="$order.status neq 0">
+                            <a class="btn btn-xs btn-danger refuse_appointment" href="javascript:void (0)" data-aid="{$order.id}" data-tid="{$order.task_id}">拒绝</a>
+                            <elseif condition="$order.status eq 0"/>
+                            <a class="btn btn-xs btn-danger" href="javascript:viod(0);">已拒绝</a>
+                        </if>
+                    </if>
+
+                </td>
+            </tr>
+        </volist>
+        </tbody>
+        <tfoot>
+        <tr>
+            <th width="50">ID</th>
+            <th>任务编号</th>
+            <th>淘宝旺旺</th>
+            <th>商家手机</th>
+            <th>买手姓名</th>
+            <th>买手手机</th>
+            <th>预约状态</th>
+            <th>订单ID</th>
+            <th>创建时间</th>
+            <th>操作</th>
+        </tr>
+        </tfoot>
+    </table>
+    <div class="table-actions" style="float:left;margin-top: 15px">
+        综合统计：共{$total}笔订单
+    </div>
+
+    <div style="clear: both;"></div>
+    <ul class="pagination">{$page|default=''}</ul>
+</div>
+
+<script src="__STATIC__/js/admin.js"></script>
+<script>
+    $(document).ready(function() {
+        Wind.css('treeTable');
+        Wind.use('treeTable', function() {
+            $("#menus-table").treeTable({
+                indent : 20
+            });
+        });
+
+    });
+    $(function () {
+        $('.end').on('click',function () {
+            var order_id = $(this).data('id');
+            $.ajax({
+                url: "{:url('order/end')}",
+                data: {order_id:order_id},
+                type: 'POST',
+                dateType: 'json',
+                success: function (data) {
+                    console.log(data)
+                    if (data != null) {
+                        if (data.code == 400) {
+                            alert(data.msg);
+                        } else if (data.code == 200) {
+                            alert(data.msg);
+                            window.location.href="{:url('order/index')}";
+                        }
+                    }
+                }
+            });
+        });
+
+        $('.refuse_appointment').on('click',function () {
+            //console.log($page_id);
+            var aid = $(this).data('aid');
+            var tid = $(this).data('tid');
+            console.log(aid);
+            openIframeLayer("{:url('Order/refuse_appointment')}?id="+aid +"&task_id="+tid, '拒绝原因', {
+                area: ['900px', '550px'],
+                btn: ['拒绝','返回'],
+                btnAlign:'c',
+                yes: function (index, layero) {
+                    //do something
+                    var iframeWin  = window[layero.find('iframe')[0]['name']];
+                    var data = iframeWin.getAuditData();
+                    $.post('{:url("Order/refuse_appointment")}',{id:data.id,task_id:data.task_id,refuse_remark:data.refuse_remark},function (res) {
+                        if (res.code==200) {
+                            alert(res.msg);
+                            layer.close(index); //如果设定了yes回调，需进行手工关闭
+                            window.location='{:url("Order/appointment")}'
+                        }else {
+                            alert(res.msg);
+                        }
+                    },'json');
+
+                }
+            });
+        });
+    })
+</script>
+</body>
+</html>

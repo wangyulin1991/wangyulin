@@ -1,0 +1,78 @@
+
+<include file="public@head"/>
+<style>
+    body, ul, ol, li, p, h1, h2, h3, h4, h5, h6, form, fieldset, table, td, img, div {
+        margin: 0;
+        padding: 0;
+        border: 0;
+        background: #ffffff;
+    }
+
+    body {
+        font-size: 12px;
+        font-family: "Microsoft YaHei"
+    }
+
+    #nav {
+        height: 37px;
+        width: 1100px;
+        border-bottom: solid 2px #2b2de0!important;
+    }
+
+    #nav a {
+        display: block;
+        width: 150px;
+        height: 35px;
+        line-height: 35px;
+        font-size: 15px;
+        text-align: center;
+        float: left;
+        background-color: #ffffff;
+        cursor: pointer;
+        color: #2B2DE0;
+        box-sizing: border-box;
+        font-weight: bold;
+        border: solid 2px #2B2DE0;
+        margin-right: 25px;
+        border-top-left-radius: 7px;
+        border-top-right-radius: 7px;
+        border-bottom: none;
+        text-decoration: none;
+        text-underline: none;
+    }
+
+    .selected{border: 1px solid #acd899;
+        background: #eaf8e5;}
+    .selected img{background: #eaf8e5;width: 100%;height: 30px;vertical-align: top;}
+</style>
+<div class="tab">
+    <div id="contentBox">
+        <div class="box active">
+            <div style="text-align: center">
+                <span>支付成功</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    var get = setInterval("getStatus()",1000);
+    setTimeout(function () {
+        clearInterval(get);
+    },120000);
+
+    function getStatus() {
+        $.ajax({
+            url: '{:url("pay/get_qr_status")}',
+            data: {order_no: '{$order_no}'},
+            type: 'get',
+            success: function (data) {
+                if (data != null && data.code == 1 && data.data == 1) {
+                    window.location.reload();
+                }
+            }
+        })
+    }
+
+</script>

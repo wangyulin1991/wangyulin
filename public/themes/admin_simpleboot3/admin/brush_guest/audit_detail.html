@@ -1,0 +1,260 @@
+<include file="public@header"/>
+</head>
+<body>
+<div class="wrap js-check-wrap">
+    <div class="row">
+      <div class="col-md-12">
+        <table class="table table-bordered">
+          <tr>
+            <th width="150px">真实姓名</th>
+            <td>
+              {$data.real_name|default=''}
+            </td>
+          </tr>
+          <tr>
+            <th>手机号码</th>
+            <td>
+              {$data.cellphone|default=''}
+            </td>
+          </tr>
+          <tr>
+            <th>推荐人手机号</th>
+            <td>
+              {$data.f_cellphone|default=''}
+            </td>
+          </tr>
+          <tr>
+            <th>QQ号</th>
+            <td>
+              {$data.qq|default=''}
+            </td>
+          </tr>
+          <tr>
+            <th>旺旺号</th>
+            <td>
+              {$data.taobao_ww|default=''}
+            </td>
+          </tr>
+          <tr>
+            <th>银行卡号</th>
+            <td>
+              {$data.bank_number|default=''}
+            </td>
+          </tr>
+          <tr>
+            <th>淘宝信誉等级</th>
+            <td>
+              <empty name="$data.taobao_level_credit">
+                暂无
+                <else/>
+                <img src="{$taobao_credit_level[$data.taobao_level_credit]['logo']}" />
+              </empty>
+
+            </td>
+          </tr>
+          <tr>
+            <th>淘气值</th>
+            <td class="form-inline">
+              <empty name="$data.taobao_tq">
+                暂无
+                <else/>
+                <img src="{:cmf_get_image_preview_url($data['taobao_tq'])}"
+                     width="135" style="cursor: pointer"/>
+              </empty>
+
+            </td>
+          </tr>
+          <tr>
+            <th>淘宝评价管理电脑版</th>
+            <td class="form-inline">
+              <empty name="$data.taobao_photo">
+                暂无
+                <else/>
+                <img src="{:cmf_get_image_preview_url($data['taobao_photo'])}"
+                     width="135" style="cursor: pointer"/>
+              </empty>
+            </td>
+          </tr>
+          <tr>
+            <th>支付宝实名截图</th>
+            <td class="form-inline">
+              <empty name="$data.alipay_photo">
+                暂无
+                <else/>
+                <img src="{:cmf_get_image_preview_url($data['alipay_photo'])}"
+                     width="135" style="cursor: pointer"/>
+              </empty>
+            </td>
+          </tr>
+          <tr>
+            <th>京东信誉等级</th>
+            <td>
+              {$data.taobao_level_credit|default=''}
+            </td>
+          </tr>
+          <tr>
+            <th>京东实名截图</th>
+            <td class="form-inline">
+              <empty name="$data.jd_photo">
+                暂无
+                <else/>
+                <img src="{:cmf_get_image_preview_url($data['jd_photo'])}"
+                     width="135" style="cursor: pointer"/>
+              </empty>
+            </td>
+          </tr>
+          <tr>
+            <th>身份证号码</th>
+            <td class="form-inline">
+              {$data.id_card_no|default='无'}
+            </td>
+          </tr>
+          <tr>
+            <th>身份证正面</th>
+            <td class="form-inline">
+              <empty name="$data.id_card_first">
+                暂无
+                <else/>
+                <img src="{:cmf_get_image_preview_url($data['id_card_first'])}"
+                     width="135" style="cursor: pointer"/>
+              </empty>
+            </td>
+          </tr>
+          <tr>
+            <th>身份证反面</th>
+            <td class="form-inline">
+              <empty name="$data.id_card_second">
+                暂无
+                <else/>
+                <img src="{:cmf_get_image_preview_url($data['id_card_second'])}"
+                     width="135" style="cursor: pointer"/>
+              </empty>
+            </td>
+          </tr>
+          <tr>
+            <th>推荐人身份证正面</th>
+            <td class="form-inline">
+              <empty name="$data.f_id_card_first">
+                暂无
+                <else/>
+                <img src="{:cmf_get_image_preview_url($data['f_id_card_first'])}"
+                     width="135" style="cursor: pointer"/>
+              </empty>
+            </td>
+          </tr>
+          <tr>
+            <th>推荐人身份证反面</th>
+            <td class="form-inline">
+              <empty name="$data.f_id_card_second">
+                暂无
+                <else/>
+                <img src="{:cmf_get_image_preview_url($data['f_id_card_second'])}"
+                     width="135" style="cursor: pointer"/>
+              </empty>
+
+            </td>
+          </tr>
+          <tr>
+            <th>淘龄</th>
+            <td>
+              <input type="text" id="taobao_age" name="taobao_age" value="{$data.taobao_age|default=''}">
+            </td>
+          </tr>
+          <tr>
+            <th>拼多多账号</th>
+            <td><input class="form-control" type="text" name="pdd_account" value="{$data.pdd_account}"
+                       placeholder="请输入拼多多账号"></td>
+          </tr>
+          <tr>
+            <th>拼多多个人中心截图</th>
+            <td class="form-inline">
+              <input type="hidden" name="pdd_personal" id="pdd_personal" value="{$data.pdd_personal}">
+              <a href="javascript:uploadOneImage('图片上传','#pdd_personal');">
+                <img src="{:cmf_get_image_preview_url($data.pdd_personal)}"
+                     id="pdd_personal-preview"
+                     width="135" style="cursor: pointer"/>
+              </a>
+              <input type="button" class="btn btn-sm btn-cancel-thumbnail" value="取消图片">
+            </td>
+          </tr>
+          <tr>
+            <th>查号结果</th>
+            <td class="form-inline">
+              <input class="form-control" type="radio" name="is_black"
+                     required value="1" <eq name="data.is_black" value="1">checked</eq>/> 白号
+              <input class="form-control" type="radio" name="is_black"
+                     required value="2" <eq name="data.is_black" value="2">checked</eq>/> 黑号
+              <input class="form-control" type="radio" name="is_black"
+                     required value="3" <eq name="data.is_black" value="3">checked</eq>/> 白号（优）
+              <input class="form-control" type="radio" name="is_black"
+                     required value="4" <eq name="data.is_black" value="4">checked</eq>/> 白号（劣）
+            </td>
+          </tr>
+          <tr>
+            <th>查号截图</th>
+            <td class="form-inline">
+              <input type="hidden" name="query_img" id="query_img" value="{$data.query_img}">
+              <if condition="empty($data.query_img)">
+                <a href="javascript:uploadOneImage('图片上传','#query_img');">
+                  <img src="__TMPL__/public/assets/images/default-thumbnail.png" id="query_img-preview"
+                       width="135" style="cursor: pointer"/>
+                </a>
+                <else />
+                <a href="javascript:uploadOneImage('图片上传','#query_img');">
+                  <img src="{:cmf_get_image_preview_url($data.query_img)}"
+                       id="query_img-preview"
+                       width="135" style="cursor: pointer"/>
+                </a>
+              </if>
+              <input type="button" class="btn btn-sm btn-cancel-thumbnail" value="取消图片">
+            </td>
+          </tr>
+          <tr>
+            <th>审核备注*<br/>（通过则删除内容）</th>
+            <td class="form-inline">
+              <textarea class="form-control" name="audit_remarks" id="audit_remarks" rows="10" cols="50">{$data.audit_remarks|default=''}</textarea>
+              <input type="hidden" name="id" id="brush_guest_id" value="{$data.id|default=''}">
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+</div>
+<script type="text/javascript" src="__STATIC__/js/admin.js"></script>
+<script type="text/javascript">
+  $(function () {
+
+    $('.btn-cancel-thumbnail').on('click',function () {
+      $(this).prev().find('img').attr('src', '__TMPL__/public/assets/images/default-thumbnail.png');
+      $(this).parent().find('input:first').val('');
+    });
+
+  });
+
+  function getAuditData() {
+      var data = new Array();
+      data.id = $('#brush_guest_id').val();
+      data.audit_remarks = $('#audit_remarks').val();
+      data.query_img = $('#query_img').val();
+      data.taobao_age = $('#taobao_age').val();
+      data.is_black = $("input[name='is_black']:checked").val();
+      return data;
+  }
+
+  function onfusRemarks(){
+      $('#audit_remarks').focus();
+  }
+  $(document).ready(function() {
+    $('.form-inline > img').on('click',function () {
+      var imgSrc = $(this).attr("src");
+      console.log(imgSrc);
+      openIframeLayer(imgSrc, '查看大图', {
+        area: ['800px', '600px'],
+        yes: function (index, layero) {
+        },
+      });
+    });
+  });
+</script>
+</body>
+</html>

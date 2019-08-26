@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>拒绝</title>
+    <style>
+        body{margin: 0;padding: 0;}
+        .d_form{width: 100%;min-height: 70px;background: #ffffff;}
+        .d_form label{width: 200px;text-align: right;display: inline-block;}
+        .d_in{height: 50px;line-height: 50px;}
+        select{width: 300px;height: 30px;border: solid 1px #9f9f9f;border-radius: 5px;}
+        input{width: 300px;height: 30px;border: solid 1px #9f9f9f;border-radius: 5px;padding-left: 10px;box-sizing: border-box;}
+        .input1{width: 15px;height: 15px;}
+
+        label{font-weight: normal;font-size: 18px;}
+        .daohang{width: 100%;height: 30px;line-height: 30px;padding-left: 15px;padding-top: 10px;font-size: 16px}
+    </style>
+</head>
+<body>
+<div class="d_form">
+    <div class="daohang"><span>订单管理</span> > <span>订单拒绝</span></div>
+    <form method="post" action="{:url('grabTask/refuse_appointment')}">
+        <input type="hidden" name="id" id="order_id" value="{$refuseId}">
+        <div class="d_in">
+            <label>拒绝原因：</label>
+            <input type="radio" name="remark"  class="input1" value="0">黑号
+            <input type="radio" name="remark"  class="input1" value="1">类目不符
+            <input type="radio" name="remark"  class="input1" value="2">其他原因
+        </div>
+    </form>
+</div>
+</body>
+<script src="__TMPL__/public/assets/js/jquery-1.10.2.min.js"></script>
+<script>
+    function getAuditData() {
+        var data = new Array();
+        data.id = $('#order_id').val();
+        data.refuse_remark = $("input[name='remark']:checked").val();
+        return data;
+    }
+</script>
+</html>

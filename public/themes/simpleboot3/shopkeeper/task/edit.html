@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+    <style>
+        body{margin: 0;padding: 0;}
+        .d_form{width: 100%;background: #ffffff;padding-bottom: 100px;padding-top: 20px;}
+        .d_form label{width: 200px;text-align: right;display: inline-block; }
+        .d_in{height: 50px;line-height: 50px;}
+        select{width: 300px;height: 30px;border: solid 1px #9f9f9f;border-radius: 5px;}
+        input{width: 300px;height: 30px;border: solid 1px #9f9f9f;border-radius: 5px;padding-left: 10px;box-sizing: border-box;}
+        .input1{width: 15px;height: 15px;}
+        textarea {
+            width: 300px;
+            height: 100px;
+            resize: none;
+            vertical-align: top;
+            border: solid 1px #9f9f9f;
+            border-radius: 5px;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        .save{width: 130px;height: 35px;line-height:35px;text-align: center;border: none; border-radius: 5px;background: #fe0000;color: #ffffff;margin-left: 285px;font-size: 14px;}
+    </style>
+</head>
+<body>
+<div class="d_form">
+    <form action="{:url('task/edit')}" enctype="multipart/form-data" method="post">
+        <input type="hidden" name="id" value="{$task.id}">
+        <div class="d_in">
+            <label>任务类型：</label>
+            <foreach name="processes" item="vo">
+            <input value="{$vo.id}" type="radio" class="input1" name="process_id" <if condition="$vo.id == $task.process_id">checked</if>>{$vo.name}
+            </foreach>
+        </div>
+        <div class="d_in">
+            <label>选择店铺：</label>
+            <select name="shop_id">
+                <option value="">全部</option>
+                <foreach name="shops" item="vo">
+                    <option value="{$vo.id}" <if condition="$vo.id == $task.shop_id">selected</if>>{$vo.name}</option>
+                </foreach>
+            </select>
+        </div>
+        <div class="d_in">
+            <label>任务标题：</label>
+            <input type="text" name="task_name" value="{$task.task_name}">
+        </div>
+        <div class="d_in">
+            <label>关键字：</label>
+            <input type="text" name="keyword" placeholder="请输入宝贝关键字，分号隔开" value="{$task.keyword}">
+        </div>
+        <div class="d_in">
+            <label>产品主图：</label>
+            <img src="{:cmf_get_image_preview_url($task.product_img)}" width="50" height="50">
+            <input name="product_img" type="file" style="border: none;" value="{$task.product_img}">
+        </div>
+        <div class="d_in">
+            <label>宝贝链接：</label>
+            <input type="text" name="product_link" value="{$task.product_link}">
+        </div>
+        <div class="d_in">
+            <label>交易价格：</label>
+            <input type="number" name="product_price" placeholder="请输入产品的价格" value="{$task.product_price}">
+        </div>
+        <div class="d_child">
+            <label>显示价格：</label>
+            <input type="text"  name="show_price" placeholder="请输入商品显示的价格" value="{$task.show_price}">
+        </div>
+        <div class="d_in">
+            <label>任务佣金：</label>
+            <input type="text" name="commission" type="number" placeholder="请输入完成单笔任务的佣金" value="{$task.commission}">
+        </div>
+        <div class="d_in">
+            <label>要拍笔数：</label>
+            <input type="text" name="deal_num" type="number" value="{$task.deal_num}">
+        </div>
+        <div class="d_in">
+            <label>任务数量：</label>
+            <input type="text" name="task_num" type="number" value="{$task.task_num}">
+        </div>
+        <div class="d_in">
+            <label>开启时间：</label>
+            <input type="date" name="start_time" value="{:date('Y-m-d',$task.start_time)}">
+        </div>
+        <div class="d_in">
+            <label>需要聊天：</label>
+            <input value="1" type="radio" class="input1" name="need_chat" <if condition="1 == $task.need_chat">checked</if>>需要
+            <input value="0" type="radio" class="input1" name="need_chat" <if condition="0 == $task.need_chat">checked</if>>不需要
+        </div>
+        <div class="d_in" style="min-height: 120px;">
+            <label>特殊说明：</label>
+            <textarea name="special_desc" rows="10">{$task.special_desc}</textarea>
+        </div>
+
+        <div>
+                <button type="submit" class="btn btn-primary js-ajax-submit save">保存</button>
+        </div>
+    </form>
+</div>
+</body>
+</html>

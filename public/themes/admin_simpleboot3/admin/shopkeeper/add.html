@@ -1,0 +1,143 @@
+<include file="public@header" />
+</head>
+<body>
+	<div class="wrap">
+		<ul class="nav nav-tabs">
+			<li><a href="{:url('shopkeeper/index')}">商家列表</a></li>
+			<li class="active"><a href="{:url('shopkeeper/add')}">添加商家</a></li>
+		</ul>
+		<form method="post" class="form-horizontal js-ajax-form margin-top-20" action="{:url('shopkeeper/add')}">
+			<div class="form-group">
+				<label for="input-mobile" class="col-sm-2 control-label"><span class="form-required">*</span>手机号</label>
+				<div class="col-md-6 col-sm-10">
+					<input type="text" class="form-control" id="input-mobile" name="mobile">
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="input-name" class="col-sm-2 control-label"><span class="form-required">*</span>联系人姓名</label>
+				<div class="col-md-6 col-sm-10">
+					<input type="text" class="form-control" id="input-name" name="name">
+				</div>
+			</div>
+			<div class="form-group">
+				<label  class="col-sm-2 control-label"><span class="form-required">*</span>联系地址</label>
+				<div class="col-md-6 col-sm-10 form-inline">
+					<select class="form-control area-select" id="province" name="province" data-next="city" style="width: 200px"></select>
+					<select class="form-control area-select" id="city" name="city" data-next="region" style="width: 200px"></select>
+					<select class="form-control" id="region" name="region"  style="width: 200px"></select>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="input-qq" class="col-sm-2 control-label">QQ</label>
+				<div class="col-md-6 col-sm-10">
+					<input type="text" class="form-control" id="input-qq" name="qq">
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="input-alipay_no" class="col-sm-2 control-label">支付宝账号</label>
+				<div class="col-md-6 col-sm-10">
+					<input type="text" class="form-control" id="input-alipay_no" name="alipay_no">
+				</div>
+			</div>
+            <div class="form-group">
+                <label for="input-section" class="col-sm-2 control-label"><span class="form-required">*</span>所属分站</label>
+                <div class="col-md-6 col-sm-10">
+                    <select class="form-control" id="input-section" name="section_id">
+                        <foreach name="$sections" item="vo">
+                            <option value="{$vo.id}" >{$vo.name}</option>
+                        </foreach>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="input-open_account_money" class="col-sm-2 control-label"><span class="form-required">*</span>开户费</label>
+                <div class="col-md-6 col-sm-10">
+                    <input type="text" class="form-control" id="input-open_account_money" value="0" name="open_account_money">
+                </div>
+            </div>
+			<div class="form-group">
+				<label for="input-rec" class="col-sm-2 control-label">允许添加商户</label>
+				<div class="col-md-6 col-sm-10">
+					<select class="form-control" id="input-rec" name="is_rec">
+						<option value="0">禁止</option>
+						<option value="1">允许</option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="input-task" class="col-sm-2 control-label">任务是否需要审核</label>
+				<div class="col-md-6 col-sm-10">
+					<select class="form-control" id="input-task" name="is_rec">
+						<option value="0">需要审核</option>
+						<option value="1">直接通过</option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-offset-2 col-sm-10">
+					<button type="submit" class="btn btn-primary js-ajax-submit">{:lang('ADD')}</button>
+				</div>
+			</div>
+		</form>
+	</div>
+	<script src="__STATIC__/js/admin.js"></script>
+<script>
+	$(function () {
+		$.get("{:url('/api/home/area/index')}", function (data) {
+			if (data.code == 1) {
+				var province = '';
+				for (var i = 0; i < data.data.province.length; i++) {
+					province += '<option value="' + data.data.province[i].id + '">' + data.data.province[i].areaName + '</option>';
+				}
+
+				var city = '';
+				for (var i = 0; i < data.data.city.length; i++) {
+					city += '<option value="' + data.data.city[i].id + '">' + data.data.city[i].areaName + '</option>';
+				}
+
+				var region = '';
+				for (var i = 0; i < data.data.region.length; i++) {
+					region += '<option value="' + data.data.region[i].id + '">' + data.data.region[i].areaName + '</option>';
+				}
+
+				$('#province').html(province);
+				$('#city').html(city);
+				$('#region').html(region);
+			} else {
+				alert('省市区初始化失败');
+			}
+		}, 'json');
+
+		$('.area-select').on('change', function () {
+			var id = $(this).val();
+			var next = $(this).data('next');
+			$.get("{:url('/api/home/area/getNextLevel')}", {id: id}, function (data) {
+				if (data.code == 1) {
+					var option = '';
+					for (var i = 0; i < data.data.area.length; i++) {
+						option += '<option value="' + data.data.area[i].id + '">' + data.data.area[i].areaName + '</option>';
+					}
+					$('#' + next).html(option);
+					if (data.data.child != undefined) {
+						var option = '';
+						for (var i = 0; i < data.data.child.length; i++) {
+							option += '<option value="' + data.data.child[i].id + '">' + data.data.child[i].areaName + '</option>';
+						}
+						if (option == '') {
+							option = '<option value="0">无</option>';
+						}
+						next = $('#' + next).data('next');
+						$('#' + next).html(option);
+					}
+				} else {
+					option = '<option value="0">无</option>';
+					$('#' + next).html(option);
+					next = $('#' + next).data('next');
+					$('#' + next).html(option);
+				}
+			})
+		});
+	})
+</script>
+</body>
+</html>

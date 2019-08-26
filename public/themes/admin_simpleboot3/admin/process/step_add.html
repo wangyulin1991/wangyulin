@@ -1,0 +1,124 @@
+<include file="public@header" />
+</head>
+<body>
+<div class="wrap">
+  <ul class="nav nav-tabs">
+    <li><a href="{:url('Process/stepIndex',['pid'=>$pid])}">步骤列表</a></li>
+    <li class="active"><a href="javascript:void(0)">添加步骤</a></li>
+  </ul>
+  <form method="post" class="form-horizontal js-ajax-form margin-top-20" action="{:url('Process/stepAdd')}">
+    <div class="form-group">
+      <label for="input-step_name" class="col-sm-2 control-label"><span class="form-required">*</span>名称</label>
+      <div class="col-md-6 col-sm-10">
+        <input type="text" class="form-control" id="input-step_name" name="step_name">
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="input-step_type" class="col-sm-2 control-label"><span class="form-required">*</span>类型</label>
+      <div class="col-md-6 col-sm-10">
+        <select id="input-step_type" class="form-control" name="step_type">
+          <option value="0">请选择</option>
+          <volist name="types" id="type">
+            <option value="{$type.id}">{$type.action_name}</option>
+          </volist>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="input-step_instruction" class="col-sm-2 control-label"><span class="form-required">*</span>描述</label>
+      <div class="col-md-6 col-sm-10">
+        <script type="text/plain" id="input-step_instruction" name="step_instruction"></script>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="input-day" class="col-sm-2 control-label"><span class="form-required">*</span>第几天任务</label>
+      <div class="col-md-6 col-sm-10">
+        <select class="form-control" name="do_day" id="input-day">
+          <option value="0">请选择</option>
+          <option value="1">第一天</option>
+          <option value="2">第二天</option>
+          <option value="3">第三天</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="input-wait_time" class="col-sm-2 control-label"><span class="form-required">*</span>等待时间</label>
+      <div class="col-md-6 col-sm-10">
+        <input type="text" class="form-control" id="input-wait_time" name="wait_time" value=""> 上一步多少小时后可以执行本步骤
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="input-is_base" class="col-sm-2 control-label"><span class="form-required">*</span>基本步骤</label>
+      <div class="col-md-6 col-sm-10">
+        <select class="form-control" name="is_base" id="input-is_base">
+          <option value="0">否</option>
+          <option value="1" selected>是</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="input-expenses" class="col-sm-2 control-label"><span class="form-required">*</span>执行扣费</label>
+      <div class="col-md-6 col-sm-10">
+        <input type="text" class="form-control" id="input-expenses" name="expenses" value=""> 执行步骤所扣金额，基础步骤不可设置。
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="input-commission" class="col-sm-2 control-label"><span class="form-required">*</span>刷客佣金</label>
+      <div class="col-md-6 col-sm-10">
+        <input type="text" class="form-control" id="input-commission" name="commission"> 执行步骤刷客佣金，基础步骤不可设置。
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="input-step_sort" class="col-sm-2 control-label"><span class="form-required">*</span>排序</label>
+      <div class="col-md-6 col-sm-10">
+        <input type="text" class="form-control" id="input-step_sort" name="step_sort" placeholder="影响做任务时的流程顺序">
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="input-is_change" class="col-sm-2 control-label"><span class="form-required">*</span>能否修改</label>
+      <div class="col-md-6 col-sm-10">
+        <select class="form-control" name="is_change" id="input-is_change">
+            <option value="0">否</option>
+            <option value="1">是</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="input-status" class="col-sm-2 control-label"><span class="form-required">*</span>状态</label>
+      <div class="col-md-6 col-sm-10">
+        <select class="form-control" name="status" id="input-status">
+          <option value="0">关闭</option>
+          <option value="1" selected>打开</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-sm-offset-2 col-sm-10">
+        <input type="hidden" name="process_id" value="{$pid}">
+        <button type="submit" class="btn btn-primary js-ajax-submit">{:lang('ADD')}</button>
+      </div>
+    </div>
+  </form>
+</div>
+<script src="__STATIC__/js/admin.js"></script>
+
+<script type="text/javascript">
+    //编辑器路径定义
+    var editorURL = GV.WEB_ROOT;
+</script>
+<script type="text/javascript" src="__STATIC__/js/ueditor/ueditor.config.js"></script>
+<script type="text/javascript" src="__STATIC__/js/ueditor/ueditor.all.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+
+        editorcontent = new baidu.editor.ui.Editor();
+        editorcontent.render('input-step_instruction');
+        try {
+            editorcontent.sync();
+        } catch (err) {
+        }
+
+    });
+</script>
+</body>
+</html>

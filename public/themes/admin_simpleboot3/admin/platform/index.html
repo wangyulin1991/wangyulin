@@ -1,0 +1,69 @@
+<include file="public@header" />
+</head>
+<body>
+<div class="wrap js-check-wrap">
+  <ul class="nav nav-tabs">
+    <li class="active"><a href="{:url('Platform/index')}">平台列表</a></li>
+    <li><a href="{:url('Platform/add')}">添加平台</a></li>
+  </ul>
+  <table class="table table-hover table-bordered table-list" id="menus-table">
+    <thead>
+    <tr>
+      <th width="50">ID</th>
+      <th width="50">排序</th>
+      <th>平台图标</th>
+      <th>平台名称</th>
+      <th>状态</th>
+      <th>创建时间</th>
+      <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    <volist name="platforms" id="platform">
+      <tr>
+        <td>{$platform.id}</td>
+        <td>{$platform.sort}</td>
+        <td><img src="{:cmf_get_image_preview_url($platform.logo)}" width="80"/></td>
+        <td>{$platform.platform_name}</td>
+        <td>{$platform.status?'开启':'关闭'}</td>
+        <td>{:date('Y-m-d H:i:s', $platform.create_time)}</td>
+        <td>
+          <a class="btn btn-xs btn-primary" href="{:url('Platform/edit', ['id' => $platform['id']])}">{:lang('EDIT')}</a>
+          <!--<if condition="$platform.status eq 1">-->
+          <!--<a class="btn btn-xs btn-danger" href="{:url('Platform/close', ['id' => $platform['id']])}">关闭</a>-->
+          <!--<elseif condition="$platform.status eq 0"/>-->
+          <!--<a class="btn btn-xs btn-success" href="{:url('Platform/close', ['id' => $platform['id']])}">开启</a>-->
+          <!--</if>-->
+        </td>
+      </tr>
+    </volist>
+    </tbody>
+    <tfoot>
+    <tr>
+      <th width="50">ID</th>
+      <th>平台图标</th>
+      <th>平台名称</th>
+      <th>状态</th>
+      <th>创建时间</th>
+      <th>操作</th>
+    </tr>
+    </tfoot>
+  </table>
+  <div class="table-actions">
+    综合统计：共{$total}个平台
+  </div>
+  <ul class="pagination">{$page|default=''}</ul>
+</div>
+<script src="__STATIC__/js/admin.js"></script>
+<script>
+    $(document).ready(function() {
+        Wind.css('treeTable');
+        Wind.use('treeTable', function() {
+            $("#menus-table").treeTable({
+                indent : 20
+            });
+        });
+    });
+</script>
+</body>
+</html>

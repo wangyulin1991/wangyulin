@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>商户后台管理中心</title>
+    <include file="public@head"/>
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <style>
+        body{margin: 0;padding: 0;}
+        .d_form{width: 100%;background: #ffffff;padding-bottom: 100px;padding-top: 5px;}
+        .d_form label{width: 200px;text-align: right;display: inline-block; }
+        .d_in{height: 50px;line-height: 50px;}
+        select{width: 300px;height: 30px;border: solid 1px #9f9f9f;border-radius: 5px;}
+        input{width: 300px;height: 30px;border: solid 1px #9f9f9f;border-radius: 5px;padding-left: 10px;box-sizing: border-box;}
+        .input1{width: 15px;height: 15px;}
+        .btn_add{display: inline-block; width: 100px;height: 30px;line-height: 30px;text-align: center;text-decoration: none; border: none; border-radius: 5px;background: #fe0000;color: #FFFFFF;}
+        label{font-weight: normal;font-size: 18px;}
+        .save{width: 130px;height: 35px;line-height:35px;text-align: center;border: none; border-radius: 5px;background: #fe0000;color: #ffffff;margin-left: 285px;font-size: 14px;}
+        .daohang{width: 100%;height: 30px;line-height: 30px;padding-left: 15px;padding-top: 10px;font-size: 16px}
+        .daohang i{color: red;font-size: 12px;}
+    </style>
+</head>
+<body>
+<div class="d_form">
+    <div class="daohang"><span>推荐管理</span> > <span>添加商户<!--(<i>仅VIP用户可操作</i>)--></span></div><br/>
+    <form id="form" action="{:url('recommend/add')}" method="post">
+        <div class="d_in">
+            <label>手机号码：</label>
+            <input type="text" id="input-tel" name="mobile">
+        </div>
+        <div class="d_in">
+            <label>qq号：</label>
+            <input type="text" name="qq">
+        </div>
+        <div class="d_in">
+            <label>支付宝账号：</label>
+            <input type="text" name="alipay_no" >
+        </div>
+        <input type="hidden" name="section_id" value="{$sections.id}">
+        <input type="hidden" name="tj_id" value="{$sections.f_id}">
+        <div>
+            <button class="save" type="button" onclick="submitForm()">保存</button>
+        </div>
+    </form>
+</div>
+<script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+</body>
+<script>
+    function submitForm() {
+        $.ajax({
+            url: "{:url('recommend/add')}",
+            data: $('#form').serialize(),
+            type: 'POST',
+            dateType: 'json',
+            success: function (data) {
+                if (data != null) {
+                    if (data.code == 0) {
+                        alert(data.msg);
+                    } else if (data.code == 1) {
+                        alert(data.msg);
+                        window.location.href="{:url('recommend/index')}";
+                    }
+                }
+            }
+        });
+    }
+</script>
+</html>
