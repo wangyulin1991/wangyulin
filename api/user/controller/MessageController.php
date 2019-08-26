@@ -6,7 +6,7 @@ use think\Db;
 
 class MessageController extends RestUserBaseController
 {
-    //首页显示最新消息
+    //首页显示最新消息123
     public function new_one()
     {
         $where = 'a.status = 0 and a.rec_user_id ='.$this->userId;
